@@ -1,0 +1,14 @@
+Program teste4;
+Var x,y,z:integer;
+ Begin
+  Z:=0;
+  Repeat
+       begin     
+           If x>y then z:=z+x*y
+             Else z:=z-x;
+Writeln(z);
+          Readln(x,y)
+       end
+  Until z>10;  
+Writeln(z);
+End.

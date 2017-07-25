@@ -1,0 +1,25 @@
+program testeproc1;
+var
+	x,y,z:integer;
+procedure p;
+var
+	a:integer;
+begin
+	readln(a);
+	if a=x then
+		z:z+x;
+	else begin
+		z:=z-x;
+		call p;
+	end;
+end;
+
+begin
+	z:=0;
+	readln(x,y);
+	if x>y then
+		call p;
+	else
+		z:=z+x+y;
+	writeln(z);
+end.
