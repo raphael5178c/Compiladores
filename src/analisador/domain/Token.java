@@ -5,11 +5,28 @@ public class Token {
 	private int codigo;
 	private String nome;
 	private String tipo;
+	private int codigoParser;
+	private int acaoSemantica;
 
 	public Token(int codigo, String nome, String tipo) {
 		this.codigo = codigo;
 		this.nome = nome;
 		this.tipo = tipo;
+	}
+	
+	public Token(int codigo, String nome, String tipo, int codigoParser, int acaoSemantica) {
+		this.codigo = codigo;
+		this.nome = nome;
+		this.tipo = tipo;
+		this.setCodigoParser(codigoParser);
+		this.setAcaoSemantica(acaoSemantica);
+	}
+	
+	public Token(int codigo, String nome, String tipo, int codigoParser) {
+		this.codigo = codigo;
+		this.nome = nome;
+		this.tipo = tipo;
+		this.setCodigoParser(codigoParser);
 	}
 
 	public Token() {
@@ -72,9 +89,23 @@ public class Token {
 	}
 
 	public String toString() {
-		return
+		return "Código " + this.codigo + "\t" + "Nome: " + this.nome + "\t" + "Tipo: " + this.tipo;
+	}
 
-		"Código " + this.codigo + "\t" + "Nome: " + this.nome + "\t" + "Tipo: " + this.tipo;
+	public int getCodigoParser() {
+		return codigoParser;
+	}
+
+	public void setCodigoParser(final int codigoParser) {
+		this.codigoParser = codigoParser;
+	}
+
+	public int getAcaoSemantica() {
+		return acaoSemantica;
+	}
+
+	public void setAcaoSemantica(final int acaoSemantica) {
+		this.acaoSemantica = acaoSemantica;
 	}
 
 }

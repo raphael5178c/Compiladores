@@ -4,14 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 import analisador.domain.Token;
-import analisador.domain.Util;
+import analisador.util.CharUtil;
+import analisador.domain.PalavraReservada;
 
 public class Lexico {
 
 	private int linha;
 
 	private int estadoInicial(char c) {
-		if (isLetter(c)) {
+		if (CharUtil.isLetter(c)) {
 			return 1;
 		}
 		if (c == '"') {
@@ -39,7 +40,7 @@ public class Lexico {
 		if (c == '(') {
 			return 15;
 		}
-		if (isDigit(c)) {
+		if (CharUtil.isDigit(c)) {
 			return 14;
 		}
 		if (c == ' ' || c == '\t') {
@@ -52,17 +53,11 @@ public class Lexico {
 	}
 
 	private int estado1(char c) {
-		if ((isLetter(c)) || (isDigit(c))) {
-			return 1;
-		}
-		return 0;
+		return (((CharUtil.isLetter(c)) || (CharUtil.isDigit(c)))) ? 1 : 0; 
 	}
 
 	private int estado3(char c) {
-		if (c == '"') {
-			return 4;
-		}
-		return 3;
+		return (c == '"') ? 4 : 3;
 	}
 
 	private int estado4(char c) {
@@ -70,17 +65,11 @@ public class Lexico {
 	}
 
 	private int estado5(char c) {
-		if ((c == '=') || (c == '>')) {
-			return 7;
-		}
-		return 0;
+		return ((c == '=') || (c == '>')) ? 7 : 0;
 	}
 
 	private int estado6(char c) {
-		if (c == '=') {
-			return 7;
-		}
-		return 0;
+		return (c == '=') ? 7 : 0;
 	}
 
 	private int estado7(char c) {
@@ -88,31 +77,19 @@ public class Lexico {
 	}
 
 	private int estado8(char c) {
-		if (c == '.') {
-			return 7;
-		}
-		return 0;
+		return (c == '.') ? 7 : 0;
 	}
 
 	private int estado9(char c) {
-		if (c == '=') {
-			return 7;
-		}
-		return 0;
+		return estado6(c);
 	}
 
 	private int estado10(char c) {
-		if (c == '*') {
-			return 11;
-		}
-		return 0;
+		return (c == '*') ? 11 : 0;
 	}
 
 	private int estado11(char c) {
-		if (c == '*') {
-			return 12;
-		}
-		return 11;
+		return (c == '*') ? 12 : 11;
 	}
 
 	private int estado12(char c) {
@@ -133,7 +110,7 @@ public class Lexico {
 	}
 
 	private int estado14(char c) {
-		if (isDigit(c)) {
+		if (CharUtil.isDigit(c)) {
 			return 14;
 		}
 		if (estadoInicial(c) < 0) {
@@ -146,14 +123,6 @@ public class Lexico {
 		return 0;
 	}
 
-	private boolean isDigit(char c) {
-		return Character.isDigit(c);
-	}
-
-	private boolean isLetter(char c) {
-		return Character.isLetter(c);
-	}
-	
 	public List<Token> analisar(String sequencia) {
 		this.linha = 0;
 		List<Token> returnList = new ArrayList<Token>();
@@ -163,23 +132,20 @@ public class Lexico {
 
 		int sequenciaLength = sequencia.length();
 		for (int i = 0; i <= sequenciaLength; i++) {
-			
 			char charAtual = i == sequenciaLength ? '$' : sequencia.charAt(i);
-			
 			contarLinha(charAtual);
 			
 			switch (estadoAtual) {
 			case 0:
 				sequenciaAtual = new StringBuilder();
 				estadoAtual = estadoInicial(charAtual);
-
 				break;
 			case 1:
 				estadoAtual = estado1(charAtual);
 				String palavra = sequenciaAtual.toString().toUpperCase();
 				if (estadoAtual == 0) {
-					if (Util.PALAVRAS_RESERVADAS.containsKey(palavra.toUpperCase())) {
-						returnList.add(new Token(((Integer) Util.PALAVRAS_RESERVADAS.get(palavra.toUpperCase())).intValue(), palavra, "Palavra Reservada"));
+					if (PalavraReservada.PALAVRAS_RESERVADAS.containsKey(palavra.toUpperCase())) {
+						returnList.add(new Token(((Integer) PalavraReservada.PALAVRAS_RESERVADAS.get(palavra.toUpperCase())).intValue(), palavra, "Palavra Reservada"));
 					} else if (sequenciaAtual.toString().length() <= 30) {
 						returnList.add(new Token(19, palavra, "ID"));
 					} else {
@@ -187,7 +153,7 @@ public class Lexico {
 					}
 					i--;
 				} else if (estadoAtual < 0) {
-					returnList.add(new Token(0, palavra, "Caractere não reconhecido! Linha: " + this.linha));
+					returnList.add(new Token(0, palavra, "Caracter não reconhecido! Linha: " + this.linha));
 					return returnList;
 				}
 				break;
@@ -274,8 +240,7 @@ public class Lexico {
 			case 11:
 				estadoAtual = estado11(charAtual);
 				if (estadoAtual < 0) {
-					returnList.add(new Token(0, sequenciaAtual.toString().replaceAll("\n", "/n").replaceAll("\t", "/t"),
-							"ID deve terminar com letra ou número! Linha: " + this.linha));
+					returnList.add(new Token(0, sequenciaAtual.toString().replaceAll("\n", "/n").replaceAll("\t", "/t"),"ID deve terminar com letra ou número! Linha: " + this.linha));
 					return returnList;
 				}
 				break;
@@ -303,8 +268,7 @@ public class Lexico {
 							returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO"));
 						}
 					} catch (Exception e) {
-						returnList.add(new Token(0, sequenciaAtual.toString(),
-								"ILEGAL, não aceita ponto decimal nem outros caracteres! Linha: " + this.linha));
+						returnList.add(new Token(0, sequenciaAtual.toString(), "ILEGAL, não aceita ponto decimal nem outros caracteres! Linha: " + this.linha));
 					}
 				}
 				break;
@@ -327,9 +291,8 @@ public class Lexico {
 	}
 
 	private void contarLinha(char charAtual) {
-		if (charAtual == '\n') {
-			this.linha += 1;
-		}
+		if (charAtual != '\n') return;
+		this.linha += 1;
 	}
 
 }
