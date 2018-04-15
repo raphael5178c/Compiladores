@@ -7,30 +7,34 @@ public class Token {
 	private String tipo;
 	private int codigoParser;
 	private int acaoSemantica;
+	private int currentlineNumber;
 
-	public Token(int codigo, String nome, String tipo) {
+	public Token(int codigo, String nome, String tipo, int lineNumber) {
 		this.codigo = codigo;
 		this.nome = nome;
 		this.tipo = tipo;
+		this.currentlineNumber = lineNumber;
 	}
 	
-	public Token(int codigo, String nome, String tipo, int codigoParser, int acaoSemantica) {
+	public Token(int codigo, String nome, String tipo, int codigoParser, int acaoSemantica, int lineNumber) {
 		this.codigo = codigo;
 		this.nome = nome;
 		this.tipo = tipo;
+		this.currentlineNumber = lineNumber;
 		this.setCodigoParser(codigoParser);
 		this.setAcaoSemantica(acaoSemantica);
 	}
 	
-	public Token(int codigo, String nome, String tipo, int codigoParser) {
+	public Token(int codigo, String nome, String tipo, int codigoParser, int lineNumber) {
 		this.codigo = codigo;
 		this.nome = nome;
 		this.tipo = tipo;
+		this.currentlineNumber = lineNumber;
 		this.setCodigoParser(codigoParser);
 	}
 
 	public Token() {
-		this(0, null, null);
+		this(0, null, null, 0);
 	}
 
 	public int getCodigo() {
@@ -106,6 +110,14 @@ public class Token {
 
 	public void setAcaoSemantica(final int acaoSemantica) {
 		this.acaoSemantica = acaoSemantica;
+	}
+
+	public int getCurrentlineNumber() {
+		return currentlineNumber;
+	}
+
+	public void setCurrentlineNumber(int currentlineNumber) {
+		this.currentlineNumber = currentlineNumber;
 	}
 
 }

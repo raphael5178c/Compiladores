@@ -8,6 +8,12 @@ import analisador.util.CharUtil;
 import analisador.domain.PalavraReservada;
 
 public class Lexico {
+	
+	public static Lexico instance;
+	
+	public static Lexico getInstance() {
+		return (instance == null) ? new Lexico() : instance;
+	}
 
 	private int linha;
 
@@ -123,171 +129,172 @@ public class Lexico {
 		return 0;
 	}
 
-	public List<Token> analisar(String sequencia) {
-		this.linha = 0;
-		List<Token> returnList = new ArrayList<Token>();
-
-		int estadoAtual = 0;
-		StringBuilder sequenciaAtual = null;
-
-		int sequenciaLength = sequencia.length();
-		for (int i = 0; i <= sequenciaLength; i++) {
-			char charAtual = i == sequenciaLength ? '$' : sequencia.charAt(i);
-			contarLinha(charAtual);
-			
-			switch (estadoAtual) {
-			case 0:
-				sequenciaAtual = new StringBuilder();
-				estadoAtual = estadoInicial(charAtual);
-				break;
-			case 1:
-				estadoAtual = estado1(charAtual);
-				String palavra = sequenciaAtual.toString().toUpperCase();
-				if (estadoAtual == 0) {
-					if (PalavraReservada.PALAVRAS_RESERVADAS.containsKey(palavra.toUpperCase())) {
-						returnList.add(new Token(((Integer) PalavraReservada.PALAVRAS_RESERVADAS.get(palavra.toUpperCase())).intValue(), palavra, "Palavra Reservada"));
-					} else if (sequenciaAtual.toString().length() <= 30) {
-						returnList.add(new Token(19, palavra, "ID"));
-					} else {
-						returnList.add(new Token(0, palavra, "ID não pode conter mais de 30 caracteres! Linha: " + this.linha));
-					}
-					i--;
-				} else if (estadoAtual < 0) {
-					returnList.add(new Token(0, palavra, "Caracter não reconhecido! Linha: " + this.linha));
-					return returnList;
-				}
-				break;
-			case 3:
-				estadoAtual = estado3(charAtual);
-				break;
-			case 4:
-				estadoAtual = estado4(charAtual);
-				if (estadoAtual == 0) {
-					if (sequenciaAtual.toString().length() < 255) {
-						returnList.add(new Token(21, sequenciaAtual.toString(), "LIT"));
-					} else {
-						returnList.add(new Token(0, sequenciaAtual.toString(), "ILEGAL, valor fora da escala! Linha:" + this.linha));
-					}
-					i--;
-				}
-				break;
-			case 5:
-				estadoAtual = estado5(charAtual);
-				if (estadoAtual == 0) {
-					returnList.add(new Token(9, sequenciaAtual.toString(), "Sinal de Menor"));
-					i--;
-				}
-				break;
-			case 6:
-				estadoAtual = estado6(charAtual);
-				if (estadoAtual == 0) {
-					returnList.add(new Token(7, sequenciaAtual.toString(), "Sinal de Maior"));
-					i--;
-				}
-				break;
-			case 7:
-				estadoAtual = estado7(charAtual);
-				if (sequenciaAtual.toString().equals("-")) {
-					returnList.add(new Token(3, sequenciaAtual.toString(), "Sinal de Subtração"));
-				} else if (sequenciaAtual.toString().equals("=")) {
-					returnList.add(new Token(6, sequenciaAtual.toString(), "Sinal de Igualdade"));
-				} else if (sequenciaAtual.toString().equals("<>")) {
-					returnList.add(new Token(11, sequenciaAtual.toString(), "Sinal de Diferente"));
-				} else if (sequenciaAtual.toString().equals(">=")) {
-					returnList.add(new Token(8, sequenciaAtual.toString(), "Sinal de Maior Igual"));
-				} else if (sequenciaAtual.toString().equals("<=")) {
-					returnList.add(new Token(10, sequenciaAtual.toString(), "Sinal de Menor Igual"));
-				} else if (sequenciaAtual.toString().equals("+")) {
-					returnList.add(new Token(2, sequenciaAtual.toString(), "Sinal de Adição"));
-				} else if (sequenciaAtual.toString().equals("*")) {
-					returnList.add(new Token(4, sequenciaAtual.toString(), "Sinal de Multiplicação"));
-				} else if (sequenciaAtual.toString().equals(")")) {
-					returnList.add(new Token(18, sequenciaAtual.toString(), "Fechamento de parênteses"));
-				} else if (sequenciaAtual.toString().equals(",")) {
-					returnList.add(new Token(15, sequenciaAtual.toString(), "Vírgula"));
-				} else if (sequenciaAtual.toString().equals(";")) {
-					returnList.add(new Token(14, sequenciaAtual.toString(), "Ponto e vírgula"));
-				} else if (sequenciaAtual.toString().equals(":=")) {
-					returnList.add(new Token(12, sequenciaAtual.toString(), "Sinal de atribuição"));
-				} else if (sequenciaAtual.toString().equals("$")) {
-					returnList.add(new Token(1, sequenciaAtual.toString(), "Fim de Arquivo"));
-					i = sequenciaLength;
+	public List<Token> analisar(String sequencia) throws Exception {
+		try {
+			this.linha = 0;
+			List<Token> returnList = new ArrayList<Token>();
+	
+			int estadoAtual = 0;
+			StringBuilder sequenciaAtual = null;
+	
+			int sequenciaLength = sequencia.length();
+			for (int i = 0; i <= sequenciaLength; i++) {
+				char charAtual = i == sequenciaLength ? '$' : sequencia.charAt(i);
+				contarLinha(charAtual);
+				
+				switch (estadoAtual) {
+				case 0:
+					sequenciaAtual = new StringBuilder();
+					estadoAtual = estadoInicial(charAtual);
 					break;
-				}
-				i--;
-				break;
-			case 8:
-				estadoAtual = estado8(charAtual);
-				if (estadoAtual == 0) {
-					returnList.add(new Token(16, sequenciaAtual.toString(), "Ponto final"));
+				case 1:
+					estadoAtual = estado1(charAtual);
+					String palavra = sequenciaAtual.toString().toUpperCase();
+					if (estadoAtual == 0) {
+						if (PalavraReservada.PALAVRAS_RESERVADAS.containsKey(palavra.toUpperCase())) {
+							returnList.add(new Token(((Integer) PalavraReservada.PALAVRAS_RESERVADAS.get(palavra.toUpperCase())).intValue(), palavra, "Palavra Reservada", this.linha));
+						} else if (sequenciaAtual.toString().length() <= 30) {
+							returnList.add(new Token(19, palavra, "ID", this.linha));
+						} else {
+							throw new Exception("ID não pode conter mais de 30 caracteres! na Linha: " + this.linha);
+						}
+						i--;
+					} else if (estadoAtual < 0) {
+						throw new Exception("Caracter não reconhecido! na Linha: " + this.linha);
+					}
+					break;
+				case 3:
+					estadoAtual = estado3(charAtual);
+					break;
+				case 4:
+					estadoAtual = estado4(charAtual);
+					if (estadoAtual == 0) {
+						if (sequenciaAtual.toString().length() < 255) {
+							returnList.add(new Token(21, sequenciaAtual.toString(), "LIT", this.linha));
+						} else {
+							throw new Exception("ILEGAL, valor fora da escala! na Linha: " + this.linha);
+						}
+						i--;
+					}
+					break;
+				case 5:
+					estadoAtual = estado5(charAtual);
+					if (estadoAtual == 0) {
+						returnList.add(new Token(9, sequenciaAtual.toString(), "Sinal de Menor", this.linha));
+						i--;
+					}
+					break;
+				case 6:
+					estadoAtual = estado6(charAtual);
+					if (estadoAtual == 0) {
+						returnList.add(new Token(7, sequenciaAtual.toString(), "Sinal de Maior", this.linha));
+						i--;
+					}
+					break;
+				case 7:
+					estadoAtual = estado7(charAtual);
+					if (sequenciaAtual.toString().equals("-")) {
+						returnList.add(new Token(3, sequenciaAtual.toString(), "Sinal de Subtração", this.linha));
+					} else if (sequenciaAtual.toString().equals("=")) {
+						returnList.add(new Token(6, sequenciaAtual.toString(), "Sinal de Igualdade", this.linha));
+					} else if (sequenciaAtual.toString().equals("<>")) {
+						returnList.add(new Token(11, sequenciaAtual.toString(), "Sinal de Diferente", this.linha));
+					} else if (sequenciaAtual.toString().equals(">=")) {
+						returnList.add(new Token(8, sequenciaAtual.toString(), "Sinal de Maior Igual", this.linha));
+					} else if (sequenciaAtual.toString().equals("<=")) {
+						returnList.add(new Token(10, sequenciaAtual.toString(), "Sinal de Menor Igual", this.linha));
+					} else if (sequenciaAtual.toString().equals("+")) {
+						returnList.add(new Token(2, sequenciaAtual.toString(), "Sinal de Adição", this.linha));
+					} else if (sequenciaAtual.toString().equals("*")) {
+						returnList.add(new Token(4, sequenciaAtual.toString(), "Sinal de Multiplicação", this.linha));
+					} else if (sequenciaAtual.toString().equals(")")) {
+						returnList.add(new Token(18, sequenciaAtual.toString(), "Fechamento de parênteses", this.linha));
+					} else if (sequenciaAtual.toString().equals(",")) {
+						returnList.add(new Token(15, sequenciaAtual.toString(), "Vírgula", this.linha));
+					} else if (sequenciaAtual.toString().equals(";")) {
+						returnList.add(new Token(14, sequenciaAtual.toString(), "Ponto e vírgula", this.linha));
+					} else if (sequenciaAtual.toString().equals(":=")) {
+						returnList.add(new Token(12, sequenciaAtual.toString(), "Sinal de atribuição", this.linha));
+					} else if (sequenciaAtual.toString().equals("$")) {
+						returnList.add(new Token(1, sequenciaAtual.toString(), "Fim de Arquivo", this.linha));
+						i = sequenciaLength;
+						break;
+					}
 					i--;
-				}
-				break;
-			case 9:
-				estadoAtual = estado9(charAtual);
-				if (estadoAtual == 0) {
-					returnList.add(new Token(13, sequenciaAtual.toString(), "Dois pontos"));
-					i--;
-				}
-				break;
-			case 10:
-				estadoAtual = estado15(charAtual);
-				if (estadoAtual == 0) {
-					returnList.add(new Token(5, sequenciaAtual.toString(), "Sinal de divisão"));
-					i--;
-				}
-				break;
-			case 11:
-				estadoAtual = estado11(charAtual);
-				if (estadoAtual < 0) {
-					returnList.add(new Token(0, sequenciaAtual.toString().replaceAll("\n", "/n").replaceAll("\t", "/t"),"ID deve terminar com letra ou número! Linha: " + this.linha));
-					return returnList;
-				}
-				break;
-			case 12:
-				estadoAtual = estado12(charAtual);
-				break;
-			case 13:
-				estadoAtual = estado13(charAtual);
-				if (estadoAtual == 0) {
-					i--;
-				}
-				break;
-			case 14:
-				estadoAtual = estado14(charAtual);
-				if (estadoAtual <= 0) {
+					break;
+				case 8:
+					estadoAtual = estado8(charAtual);
+					if (estadoAtual == 0) {
+						returnList.add(new Token(16, sequenciaAtual.toString(), "Ponto final", this.linha));
+						i--;
+					}
+					break;
+				case 9:
+					estadoAtual = estado9(charAtual);
+					if (estadoAtual == 0) {
+						returnList.add(new Token(13, sequenciaAtual.toString(), "Dois pontos", this.linha));
+						i--;
+					}
+					break;
+				case 10:
+					estadoAtual = estado15(charAtual);
+					if (estadoAtual == 0) {
+						returnList.add(new Token(5, sequenciaAtual.toString(), "Sinal de divisão", this.linha));
+						i--;
+					}
+					break;
+				case 11:
+					estadoAtual = estado11(charAtual);
+					if (estadoAtual < 0) {
+						throw new Exception("ID deve terminar com letra ou número! na Linha: " + this.linha);
+					}
+					break;
+				case 12:
+					estadoAtual = estado12(charAtual);
+					break;
+				case 13:
+					estadoAtual = estado13(charAtual);
 					if (estadoAtual == 0) {
 						i--;
 					}
-					try {
-						int numInteiro = Integer.parseInt(sequenciaAtual.toString());
-						if ((numInteiro > 32767)) {
-							returnList.add(new Token(0, sequenciaAtual.toString(),
-									"ILEGAL, valor fora da escala! Linha: " + this.linha));
-						} else {
-							returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO"));
+					break;
+				case 14:
+					estadoAtual = estado14(charAtual);
+					if (estadoAtual <= 0) {
+						if (estadoAtual == 0) {
+							i--;
 						}
-					} catch (Exception e) {
-						returnList.add(new Token(0, sequenciaAtual.toString(), "ILEGAL, não aceita ponto decimal nem outros caracteres! Linha: " + this.linha));
+						try {
+							int numInteiro = Integer.parseInt(sequenciaAtual.toString());
+							if ((numInteiro > 32767)) {
+								throw new Exception("ILEGAL, valor fora da escala! na Linha: " + this.linha);
+							} else {
+								returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO", this.linha));
+							}
+						} catch (Exception e) {
+							throw new Exception("ILEGAL, não aceita ponto decimal nem outros caracteres! na Linha: " + this.linha);
+						}
 					}
+					break;
+				case 15:
+					estadoAtual = estado10(charAtual);
+					if (estadoAtual == 0) {
+						returnList.add(new Token(17, sequenciaAtual.toString(), "Abertura de Parênteses", this.linha));
+						i--;
+					}
+					break;
 				}
-				break;
-			case 15:
-				estadoAtual = estado10(charAtual);
-				if (estadoAtual == 0) {
-					returnList.add(new Token(17, sequenciaAtual.toString(), "Abertura de Parênteses"));
-					i--;
+				if (estadoAtual >= 0) {
+					sequenciaAtual.append(charAtual);
+				} else {
+					estadoAtual = 0;
+					throw new Exception("Atenção! token inválido! na Linha: " + this.linha);
 				}
-				break;
 			}
-			if (estadoAtual >= 0) {
-				sequenciaAtual.append(charAtual);
-			} else {
-				returnList.add(new Token(0, String.valueOf(charAtual), "Atenção! token inválido! Linha: " + this.linha));
-				estadoAtual = 0;
-			}
+			return returnList;
+		} catch (Exception ex) {
+			throw ex;
 		}
-		return returnList;
 	}
 
 	private void contarLinha(char charAtual) {
