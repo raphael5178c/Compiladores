@@ -21,17 +21,15 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
-import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 
 import analisador.domain.Token;
 import analisador.program.Lexico;
 import analisador.util.consoleUtil;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
 public class Main extends JFrame{
 	
@@ -39,12 +37,14 @@ public class Main extends JFrame{
 	
 	public static JTextArea txtSaidaConsole = new JTextArea();
 	public static JTextArea txtFonte = new JTextArea();
+	public static final long serialVersionUID = 1L;
+	public static JTable table;
 	
 	public Main() {
-		JMenuBar menuBar = new JMenuBar();
 		txtFonte.setTabSize(2);
-		setJMenuBar(menuBar);
 		txtSaidaConsole.setEnabled(false);	
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
 		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Escolher Arquivo");
 		mntmNewMenuItem_2.addMouseListener(new MouseAdapter() {
 			@Override
@@ -131,6 +131,7 @@ public class Main extends JFrame{
 		);
 		
 		table = new JTable();
+		table.setEnabled(false);
 		table.setModel(new DefaultTableModel(
 			new Object[][] {
 			},
@@ -210,9 +211,6 @@ public class Main extends JFrame{
 		if(file == null) return null;
 		return file.toPath();
 	}
-
-	private static final long serialVersionUID = 1L;
-	private JTable table;
 
 	public static void main(String[] args) {
 		Main main = new Main();
