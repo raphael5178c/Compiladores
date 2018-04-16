@@ -272,6 +272,9 @@ public class Lexico {
 								returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO", this.linha));
 							}
 						} catch (Exception e) {
+							if(e.getMessage().indexOf("ILEGAL, valor fora da escala! na Linha: ") >= 0) {
+								throw e;
+							}
 							throw new Exception("ILEGAL, não aceita ponto decimal nem outros caracteres! na Linha: " + this.linha);
 						}
 					}

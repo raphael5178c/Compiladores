@@ -139,9 +139,6 @@ public class Main extends JFrame{
 				"C\u00F3digo do Token", "Token", "Descri\u00E7\u00E3o"
 			}
 		) {
-			/**
-			 * 
-			 */
 			private static final long serialVersionUID = 1L;
 			@SuppressWarnings("rawtypes")
 			Class[] columnTypes = new Class[] {
