@@ -61,39 +61,8 @@ public class Token {
 		this.tipo = tipo;
 	}
 
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null) {
-			return false;
-		}
-		if (getClass() != obj.getClass()) {
-			return false;
-		}
-		Token other = (Token) obj;
-		if (this.codigo != other.codigo) {
-			return false;
-		}
-		if (this.nome == null) {
-			if (other.nome != null) {
-				return false;
-			}
-		} else if (!this.nome.equals(other.nome)) {
-			return false;
-		}
-		if (this.tipo == null) {
-			if (other.tipo != null) {
-				return false;
-			}
-		} else if (!this.tipo.equals(other.tipo)) {
-			return false;
-		}
-		return true;
-	}
-
 	public String toString() {
-		return "CÃ³digo " + this.codigo + "\t" + "Nome: " + this.nome + "\t" + "Tipo: " + this.tipo;
+		return "Código " + this.codigo + "\t" + "Nome: " + this.nome + "\t" + "Tipo: " + this.tipo;
 	}
 
 	public int getCodigoParser() {

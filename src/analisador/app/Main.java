@@ -32,7 +32,7 @@ import analisador.constants.LMSConstantTokens;
 import analisador.domain.PalavraReservada;
 import analisador.domain.Token;
 import analisador.program.Lexico;
-import analisador.util.consoleUtil;
+import analisador.util.ConsoleUtil;
 
 public class Main extends JFrame{
 	
@@ -204,23 +204,24 @@ public class Main extends JFrame{
 		fileSelected = new File(chooser.getSelectedFile().getPath());
 		try {
 			txtFonte.setText(new String(Files.readAllBytes(fileToPath(fileSelected))));
-			consoleUtil.getInstance().setTxtInfoConsole("Arquivo Selecionado: "+fileSelected.getName());
+			ConsoleUtil.getInstance().setTxtInfoConsole("Arquivo Selecionado: "+fileSelected.getName());
 		} catch (IOException ex) {
-			consoleUtil.getInstance().setTxtErrorConsole(ex);
+			ConsoleUtil.getInstance().setTxtErrorConsole(ex);
 		}
 	}
 	
 	protected void analiseSintatica() {
-		consoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
+		ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
 	}
 	
 	protected void analiseLexica() {
 		String [] colunas = {"Código do token", "Token", "Descrição do token"};
+		ConsoleUtil.getInstance().clearConsole();;
 		try {
-			consoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise léxica do código de fonte...");
+			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise léxica do código de fonte...");
 			List<Token> tokenList = Lexico.getInstance().analisar(txtFonte.getText());
 			if ((tokenList == null) || (tokenList.size() < 0)) 	{
-				consoleUtil.getInstance().setTxtErrorConsole("Código não analisado, pois não possui Tokens");
+				ConsoleUtil.getInstance().setTxtErrorConsole("Código não analisado, pois não possui Tokens");
 			}
 			String[][] dados = new String[tokenList.size()][3];
 			for (int i = 0 ; i < tokenList.size(); i++) {
@@ -233,10 +234,10 @@ public class Main extends JFrame{
 			centerRenderer.setHorizontalAlignment(JLabel.CENTER);
 			table.setModel(new DefaultTableModel(dados, colunas));
 			table.setDefaultRenderer(String.class, centerRenderer);
-			consoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise léxica do código de fonte...");
+			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise léxica do código de fonte...");
 		} catch (Exception ex) {
 			table.setModel(new DefaultTableModel(null, colunas));
-			consoleUtil.getInstance().setTxtErrorConsole(ex);
+			ConsoleUtil.getInstance().setTxtErrorConsole(ex);
 		}
 	}
 	

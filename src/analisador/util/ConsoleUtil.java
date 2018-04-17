@@ -6,14 +6,14 @@ import javax.swing.JTextArea;
 
 import analisador.app.Main;
 
-public class consoleUtil extends Console {
+public class ConsoleUtil extends Console {
 	
 	public static final JTextArea TXT_SAIDA_CONSOLE = Main.txtSaidaConsole;
 	
-	public static consoleUtil instance;
+	public static ConsoleUtil instance;
 	
-	public static consoleUtil getInstance() {
-		return (instance == null) ? new consoleUtil() : instance;
+	public static ConsoleUtil getInstance() {
+		return (instance == null) ? new ConsoleUtil() : instance;
 	}
 	
 	public JTextArea getConsoleSaida() {
