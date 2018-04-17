@@ -4,7 +4,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class PalavraReservada {
-
+	
+	private String palavra;
+	private int idLms;
+	private int idGalls;
+	
 	public static final Map<String, Integer> PALAVRAS_RESERVADAS = new HashMap<String, Integer>();
 
 	static {
@@ -33,4 +37,39 @@ public class PalavraReservada {
 		PALAVRAS_RESERVADAS.put("TO", 44);
 		PALAVRAS_RESERVADAS.put("CASE", 45);
 	}
+	
+	public PalavraReservada(String palavra, int idLms, int idGalls) {
+		this.palavra = palavra;
+		this.idLms = idLms;
+		this.idGalls = idGalls;
+	}
+	
+	public PalavraReservada(String palavra) {
+		this.palavra = palavra;
+	}
+	
+	public String getPalavra() {
+		return palavra;
+	}
+
+	public void setPalavra(final String palavra) {
+		this.palavra = palavra;
+	}
+
+	public int getIdLms() {
+		return idLms;
+	}
+
+	public void setIdLms(final int idLms) {
+		this.idLms = idLms;
+	}
+
+	public int getIdGalls() {
+		return idGalls;
+	}
+
+	public void setIdGalls(final int idGalls) {
+		this.idGalls = idGalls;
+	}
+	
 }

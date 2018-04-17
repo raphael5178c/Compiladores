@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.GroupLayout;
@@ -27,11 +28,15 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import analisador.constants.LMSConstantTokens;
+import analisador.domain.PalavraReservada;
 import analisador.domain.Token;
 import analisador.program.Lexico;
 import analisador.util.consoleUtil;
 
 public class Main extends JFrame{
+	
+	public static ArrayList<PalavraReservada> palavraReservadaList = new ArrayList<PalavraReservada>();
 	
 	public static File fileSelected;
 	
@@ -39,6 +44,42 @@ public class Main extends JFrame{
 	public static JTextArea txtFonte = new JTextArea();
 	public static final long serialVersionUID = 1L;
 	public static JTable table;
+	
+	public static void main(String[] args) {
+		setAllTokens();
+		
+		Main main = new Main();
+		main.setVisible(true);
+		main.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        main.setExtendedState(Frame.MAXIMIZED_BOTH);
+	}
+	
+	public static void setAllTokens() {
+		palavraReservadaList.add(new PalavraReservada("PROGRAM", 22, LMSConstantTokens.TOKEN_PROGRAM));
+		palavraReservadaList.add(new PalavraReservada("CONST", 23, LMSConstantTokens.TOKEN_CONST));
+		palavraReservadaList.add(new PalavraReservada("VAR", 24, LMSConstantTokens.TOKEN_VAR));
+		palavraReservadaList.add(new PalavraReservada("PROCEDURE", 25, LMSConstantTokens.TOKEN_PROCEDURE));
+		palavraReservadaList.add(new PalavraReservada("BEGIN", 26, LMSConstantTokens.TOKEN_BEGIN));
+		palavraReservadaList.add(new PalavraReservada("END", 27, LMSConstantTokens.TOKEN_END));
+		palavraReservadaList.add(new PalavraReservada("INTEGER", 28, LMSConstantTokens.TOKEN_INTEGER));
+		palavraReservadaList.add(new PalavraReservada("OF", 29, LMSConstantTokens.TOKEN_OF));
+		palavraReservadaList.add(new PalavraReservada("CALL", 30, LMSConstantTokens.TOKEN_CALL));
+		palavraReservadaList.add(new PalavraReservada("IF", 31, LMSConstantTokens.TOKEN_IF));
+		palavraReservadaList.add(new PalavraReservada("THEN", 32, LMSConstantTokens.TOKEN_THEN));
+		palavraReservadaList.add(new PalavraReservada("ELSE", 33, LMSConstantTokens.TOKEN_ELSE));
+		palavraReservadaList.add(new PalavraReservada("WHILE", 34, LMSConstantTokens.TOKEN_WHILE));
+		palavraReservadaList.add(new PalavraReservada("DO", 35, LMSConstantTokens.TOKEN_DO));
+		palavraReservadaList.add(new PalavraReservada("REPEAT", 36, LMSConstantTokens.TOKEN_REPEAT));
+		palavraReservadaList.add(new PalavraReservada("UNTIL", 37, LMSConstantTokens.TOKEN_UNTIL));
+		palavraReservadaList.add(new PalavraReservada("READLN", 38, LMSConstantTokens.TOKEN_READLN));
+		palavraReservadaList.add(new PalavraReservada("WRITELN", 39, LMSConstantTokens.TOKEN_WRITELN));
+		palavraReservadaList.add(new PalavraReservada("OR", 40, LMSConstantTokens.TOKEN_OR));
+		palavraReservadaList.add(new PalavraReservada("AND", 41, LMSConstantTokens.TOKEN_AND));
+		palavraReservadaList.add(new PalavraReservada("NOT", 42, LMSConstantTokens.TOKEN_NOT));
+		palavraReservadaList.add(new PalavraReservada("FOR", 43, LMSConstantTokens.TOKEN_FOR));
+		palavraReservadaList.add(new PalavraReservada("TO", 44, LMSConstantTokens.TOKEN_TO));
+		palavraReservadaList.add(new PalavraReservada("CASE", 45, LMSConstantTokens.TOKEN_CASE));
+	}
 	
 	public Main() {
 		txtFonte.setTabSize(2);
@@ -209,10 +250,4 @@ public class Main extends JFrame{
 		return file.toPath();
 	}
 
-	public static void main(String[] args) {
-		Main main = new Main();
-		main.setVisible(true);
-		main.setDefaultCloseOperation(EXIT_ON_CLOSE);
-        main.setExtendedState(Frame.MAXIMIZED_BOTH);
-	}
 }

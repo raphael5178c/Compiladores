@@ -5,6 +5,8 @@ import java.util.List;
 
 import analisador.domain.Token;
 import analisador.util.CharUtil;
+import analisador.app.Main;
+import analisador.constants.LMSConstantTokens;
 import analisador.domain.PalavraReservada;
 
 public class Lexico {
@@ -152,9 +154,9 @@ public class Lexico {
 					String palavra = sequenciaAtual.toString().toUpperCase();
 					if (estadoAtual == 0) {
 						if (PalavraReservada.PALAVRAS_RESERVADAS.containsKey(palavra.toUpperCase())) {
-							returnList.add(new Token(((Integer) PalavraReservada.PALAVRAS_RESERVADAS.get(palavra.toUpperCase())).intValue(), palavra, "Palavra Reservada", this.linha));
+							returnList.add(new Token(((Integer) PalavraReservada.PALAVRAS_RESERVADAS.get(palavra.toUpperCase())).intValue(), palavra, "Palavra Reservada", getCodigoParser(palavra.toUpperCase()), this.linha));
 						} else if (sequenciaAtual.toString().length() <= 30) {
-							returnList.add(new Token(19, palavra, "ID", this.linha));
+							returnList.add(new Token(19, palavra, "ID", LMSConstantTokens.TOKEN_IDENTIFICADOR, this.linha));
 						} else {
 							throw new Exception("ID não pode conter mais de 30 caracteres! na Linha: " + this.linha);
 						}
@@ -170,7 +172,7 @@ public class Lexico {
 					estadoAtual = estado4(charAtual);
 					if (estadoAtual == 0) {
 						if (sequenciaAtual.toString().length() < 255) {
-							returnList.add(new Token(21, sequenciaAtual.toString(), "LIT", this.linha));
+							returnList.add(new Token(21, sequenciaAtual.toString(), "LIT", LMSConstantTokens.TOKEN_LITERAL, this.linha));
 						} else {
 							throw new Exception("ILEGAL, valor fora da escala! na Linha: " + this.linha);
 						}
@@ -180,43 +182,43 @@ public class Lexico {
 				case 5:
 					estadoAtual = estado5(charAtual);
 					if (estadoAtual == 0) {
-						returnList.add(new Token(9, sequenciaAtual.toString(), "Sinal de Menor", this.linha));
+						returnList.add(new Token(9, sequenciaAtual.toString(), "Sinal de Menor", LMSConstantTokens.TOKEN_COMPARACAO_MENOR, this.linha));
 						i--;
 					}
 					break;
 				case 6:
 					estadoAtual = estado6(charAtual);
 					if (estadoAtual == 0) {
-						returnList.add(new Token(7, sequenciaAtual.toString(), "Sinal de Maior", this.linha));
+						returnList.add(new Token(7, sequenciaAtual.toString(), "Sinal de Maior", LMSConstantTokens.TOKEN_COMPARACAO_MAIOR, this.linha));
 						i--;
 					}
 					break;
 				case 7:
 					estadoAtual = estado7(charAtual);
 					if (sequenciaAtual.toString().equals("-")) {
-						returnList.add(new Token(3, sequenciaAtual.toString(), "Sinal de Subtração", this.linha));
+						returnList.add(new Token(3, sequenciaAtual.toString(), "Sinal de Subtração", LMSConstantTokens.TOKEN_OPERACAO_SUBTRAI, this.linha));
 					} else if (sequenciaAtual.toString().equals("=")) {
-						returnList.add(new Token(6, sequenciaAtual.toString(), "Sinal de Igualdade", this.linha));
+						returnList.add(new Token(6, sequenciaAtual.toString(), "Sinal de Igualdade", LMSConstantTokens.TOKEN_COMPARACAO_IGUAL, this.linha));
 					} else if (sequenciaAtual.toString().equals("<>")) {
-						returnList.add(new Token(11, sequenciaAtual.toString(), "Sinal de Diferente", this.linha));
+						returnList.add(new Token(11, sequenciaAtual.toString(), "Sinal de Diferente", LMSConstantTokens.TOKEN_COMPARACAO_DIFERENTE, this.linha));
 					} else if (sequenciaAtual.toString().equals(">=")) {
-						returnList.add(new Token(8, sequenciaAtual.toString(), "Sinal de Maior Igual", this.linha));
+						returnList.add(new Token(8, sequenciaAtual.toString(), "Sinal de Maior Igual", LMSConstantTokens.TOKEN_COMPARACAO_MAIOR_IGUAL, this.linha));
 					} else if (sequenciaAtual.toString().equals("<=")) {
-						returnList.add(new Token(10, sequenciaAtual.toString(), "Sinal de Menor Igual", this.linha));
+						returnList.add(new Token(10, sequenciaAtual.toString(), "Sinal de Menor Igual", LMSConstantTokens.TOKEN_COMPARACAO_MENOR_IGUAL, this.linha));
 					} else if (sequenciaAtual.toString().equals("+")) {
-						returnList.add(new Token(2, sequenciaAtual.toString(), "Sinal de Adição", this.linha));
+						returnList.add(new Token(2, sequenciaAtual.toString(), "Sinal de Adição", LMSConstantTokens.TOKEN_OPERACAO_ADICIONA, this.linha));
 					} else if (sequenciaAtual.toString().equals("*")) {
-						returnList.add(new Token(4, sequenciaAtual.toString(), "Sinal de Multiplicação", this.linha));
+						returnList.add(new Token(4, sequenciaAtual.toString(), "Sinal de Multiplicação", LMSConstantTokens.TOKEN_OPERACAO_MULTIPLICA, this.linha));
 					} else if (sequenciaAtual.toString().equals(")")) {
-						returnList.add(new Token(18, sequenciaAtual.toString(), "Fechamento de parênteses", this.linha));
+						returnList.add(new Token(18, sequenciaAtual.toString(), "Fechamento de parênteses", LMSConstantTokens.TOKEN_FECHA_PARENTESES, this.linha));
 					} else if (sequenciaAtual.toString().equals(",")) {
-						returnList.add(new Token(15, sequenciaAtual.toString(), "Vírgula", this.linha));
+						returnList.add(new Token(15, sequenciaAtual.toString(), "Vírgula", LMSConstantTokens.TOKEN_VIRGULA, this.linha));
 					} else if (sequenciaAtual.toString().equals(";")) {
-						returnList.add(new Token(14, sequenciaAtual.toString(), "Ponto e vírgula", this.linha));
+						returnList.add(new Token(14, sequenciaAtual.toString(), "Ponto e vírgula", LMSConstantTokens.TOKEN_PONTO_VIRGULA, this.linha));
 					} else if (sequenciaAtual.toString().equals(":=")) {
-						returnList.add(new Token(12, sequenciaAtual.toString(), "Sinal de atribuição", this.linha));
+						returnList.add(new Token(12, sequenciaAtual.toString(), "Sinal de atribuição", LMSConstantTokens.TOKEN_ATRIBUICAO, this.linha));
 					} else if (sequenciaAtual.toString().equals("$")) {
-						returnList.add(new Token(1, sequenciaAtual.toString(), "Fim de Arquivo", this.linha));
+						returnList.add(new Token(1, sequenciaAtual.toString(), "Fim de Arquivo", LMSConstantTokens.TOKEN_DOLLAR, this.linha));
 						i = sequenciaLength;
 						break;
 					}
@@ -225,21 +227,21 @@ public class Lexico {
 				case 8:
 					estadoAtual = estado8(charAtual);
 					if (estadoAtual == 0) {
-						returnList.add(new Token(16, sequenciaAtual.toString(), "Ponto final", this.linha));
+						returnList.add(new Token(16, sequenciaAtual.toString(), "Ponto final", LMSConstantTokens.TOKEN_PONTO, this.linha));
 						i--;
 					}
 					break;
 				case 9:
 					estadoAtual = estado9(charAtual);
 					if (estadoAtual == 0) {
-						returnList.add(new Token(13, sequenciaAtual.toString(), "Dois pontos", this.linha));
+						returnList.add(new Token(13, sequenciaAtual.toString(), "Dois pontos", LMSConstantTokens.TOKEN_DOIS_PONTOS, this.linha));
 						i--;
 					}
 					break;
 				case 10:
 					estadoAtual = estado15(charAtual);
 					if (estadoAtual == 0) {
-						returnList.add(new Token(5, sequenciaAtual.toString(), "Sinal de divisão", this.linha));
+						returnList.add(new Token(5, sequenciaAtual.toString(), "Sinal de divisão", LMSConstantTokens.TOKEN_OPERACAO_DIVIDE, this.linha));
 						i--;
 					}
 					break;
@@ -269,7 +271,7 @@ public class Lexico {
 							if ((numInteiro > 32767)) {
 								throw new Exception("ILEGAL, valor fora da escala! na Linha: " + this.linha);
 							} else {
-								returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO", this.linha));
+								returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO", LMSConstantTokens.TOKEN_INTEGER, this.linha));
 							}
 						} catch (Exception e) {
 							if(e.getMessage().indexOf("ILEGAL, valor fora da escala! na Linha: ") >= 0) {
@@ -282,7 +284,7 @@ public class Lexico {
 				case 15:
 					estadoAtual = estado10(charAtual);
 					if (estadoAtual == 0) {
-						returnList.add(new Token(17, sequenciaAtual.toString(), "Abertura de Parênteses", this.linha));
+						returnList.add(new Token(17, sequenciaAtual.toString(), "Abertura de Parênteses", LMSConstantTokens.TOKEN_ABRE_PARENTESES, this.linha));
 						i--;
 					}
 					break;
@@ -298,6 +300,15 @@ public class Lexico {
 		} catch (Exception ex) {
 			throw ex;
 		}
+	}
+
+	private int getCodigoParser(String key) {
+		for (PalavraReservada palavraReservada : Main.palavraReservadaList) {
+			if(palavraReservada.getPalavra().equalsIgnoreCase(key)) {
+				return palavraReservada.getIdGalls();
+			}
+		}
+		return 0;
 	}
 
 	private void contarLinha(char charAtual) {
