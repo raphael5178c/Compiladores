@@ -35,17 +35,17 @@ public class Sintatico {
 		int currentIndex = 0;
 		while (pilha.size() > 0) {
 			tokenAtual = (tokenAtual == null) ? listToken.get(currentIndex++) : tokenAtual;
-			System.out.println(tokenAtual.getNome());
 			int pilhaCodigo = pilha.pop();
-			if(pilhaCodigo == LMSConstantTokens.TOKEN_EPSILON) {
+			if(pilhaCodigo == LMSConstantTokens.TOKEN_EPSILON || pilhaCodigo == LMSConstantTokens.TOKEN_DOLLAR) {
 				continue;
 			}
 			if (isTerminalState(pilhaCodigo)) {
 				if(pilhaCodigo == tokenAtual.getCodigoParser() && !pilha.isEmpty()) {
+					System.out.println(tokenAtual.getNome());
 					try {
 						tokenAtual = listToken.get(currentIndex++);
 					} catch (Exception e) {
-						// TODO: handle exception
+						e.printStackTrace();
 					}
 				} else {
 					throw new Exception(ExceptionUtil.getSyntaticErrorException(tokenAtual));

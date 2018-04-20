@@ -7,19 +7,10 @@ var
 begin
 	readln(a);
 	if a=x then
-		z:z+x;
-	else begin
+	begin
 		z:=z-x;
 		call p;
-	end;
-end;
-
+	end
+end
 begin
-	z:=0;
-	readln(x,y);
-	if x>y then
-		call p;
-	else
-		z:=z+x+y;
-	writeln(z);
 end.

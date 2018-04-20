@@ -3,11 +3,11 @@ package analisador.program;
 import java.util.ArrayList;
 import java.util.List;
 
-import analisador.domain.Token;
-import analisador.util.CharUtil;
 import analisador.app.Main;
 import analisador.constants.LMSConstantTokens;
 import analisador.domain.PalavraReservada;
+import analisador.domain.Token;
+import analisador.util.CharUtil;
 
 public class Lexico {
 
@@ -294,7 +294,7 @@ public class Lexico {
 								throw new Exception("ILEGAL, valor fora da escala! na Linha: " + this.linha);
 							} else {
 								returnList.add(new Token(20, String.valueOf(numInteiro), "INTEIRO",
-										LMSConstantTokens.TOKEN_INTEGER, this.linha));
+										LMSConstantTokens.TOKEN_NUMERAL, this.linha));
 							}
 						} catch (Exception e) {
 							if (e.getMessage().indexOf("ILEGAL, valor fora da escala! na Linha: ") >= 0) {
