@@ -218,7 +218,11 @@ public class Main extends JFrame{
 		if (ValueUtil.isNotEmpty(tokenList)) {
 			tokenList.forEach(e -> System.out.println(e.getCodigoParser()));
 		}
-		Sintatico.getInstance().analiseSintatica(tokenList);
+		try {
+			Sintatico.getInstance().analiseSintatica(tokenList);
+		} catch (Exception ex) {
+			ConsoleUtil.getInstance().setTxtErrorConsole(ex);
+		}
 	}
 	
 	protected void analiseLexica() {
