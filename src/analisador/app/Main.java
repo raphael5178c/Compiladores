@@ -34,7 +34,6 @@ import analisador.domain.Token;
 import analisador.program.Lexico;
 import analisador.program.Sintatico;
 import analisador.util.ConsoleUtil;
-import analisador.util.ValueUtil;
 
 public class Main extends JFrame{
 	
@@ -215,11 +214,9 @@ public class Main extends JFrame{
 	
 	protected void analiseSintatica() {
 		ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
-		if (ValueUtil.isNotEmpty(tokenList)) {
-			tokenList.forEach(e -> System.out.println(e.getCodigoParser()));
-		}
 		try {
 			Sintatico.getInstance().analiseSintatica(tokenList);
+			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");
 		} catch (Exception ex) {
 			ConsoleUtil.getInstance().setTxtErrorConsole(ex);
 		}

@@ -14,7 +14,7 @@ begin
 	begin
 		z:=z-x;
 		call p;
-	end
+	end;
 end;
 
 begin
@@ -27,6 +27,6 @@ begin
 	else
 	begin
 		z:=z+x+y;
-	end
+	end;
 	writeln(z);
 end.

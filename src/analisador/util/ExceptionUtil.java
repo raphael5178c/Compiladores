@@ -5,7 +5,7 @@ import analisador.domain.Token;
 public class ExceptionUtil {
 	
 	public static String getSyntaticErrorException(Token token) {
-		return "Syntax Error, Unexpected Token: "+token.getNome()+", On Line: "+(token.getCurrentlineNumber());
+		return "Syntax Error, Unexpected Value: "+token.getNome()+", On Line: "+(token.getCurrentlineNumber()+1);
 	}
 
 }
