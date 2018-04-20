@@ -213,8 +213,11 @@ public class Main extends JFrame{
 	}
 	
 	protected void analiseSintatica() {
-		ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
 		try {
+			if(tokenList == null || tokenList.size() == 0) {
+				analiseLexica();
+			}
+			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
 			Sintatico.getInstance().analiseSintatica(tokenList);
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");
 		} catch (Exception ex) {
@@ -224,7 +227,6 @@ public class Main extends JFrame{
 	
 	protected void analiseLexica() {
 		String [] colunas = {"Código do token", "Token", "Descrição do token"};
-		ConsoleUtil.getInstance().clearConsole();;
 		try {
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise léxica do código de fonte...");
 			tokenList = Lexico.getInstance().analisar(txtFonte.getText());

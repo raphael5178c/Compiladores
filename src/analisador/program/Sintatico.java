@@ -68,7 +68,6 @@ public class Sintatico {
 			try {
 				tokenAtual = listToken.get(currentIndex++);
 			} catch (Exception e) {
-				e.printStackTrace();
 			}
 		} else {
 			throw new Exception(ExceptionUtil.getSyntaticErrorException(tokenAtual));
