@@ -32,7 +32,9 @@ import analisador.constants.LMSConstantTokens;
 import analisador.domain.PalavraReservada;
 import analisador.domain.Token;
 import analisador.program.Lexico;
+import analisador.program.Sintatico;
 import analisador.util.ConsoleUtil;
+import analisador.util.ValueUtil;
 
 public class Main extends JFrame{
 	
@@ -44,6 +46,7 @@ public class Main extends JFrame{
 	public static JTextArea txtFonte = new JTextArea();
 	public static final long serialVersionUID = 1L;
 	public static JTable table;
+	List<Token> tokenList;
 	
 	public static void main(String[] args) {
 		setAllTokens();
@@ -212,6 +215,10 @@ public class Main extends JFrame{
 	
 	protected void analiseSintatica() {
 		ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
+		if (ValueUtil.isNotEmpty(tokenList)) {
+			tokenList.forEach(e -> System.out.println(e.getCodigoParser()));
+		}
+		Sintatico.getInstance().analiseSintatica(tokenList);
 	}
 	
 	protected void analiseLexica() {
@@ -219,7 +226,7 @@ public class Main extends JFrame{
 		ConsoleUtil.getInstance().clearConsole();;
 		try {
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise léxica do código de fonte...");
-			List<Token> tokenList = Lexico.getInstance().analisar(txtFonte.getText());
+			tokenList = Lexico.getInstance().analisar(txtFonte.getText());
 			if ((tokenList == null) || (tokenList.size() < 0)) 	{
 				ConsoleUtil.getInstance().setTxtErrorConsole("Código não analisado, pois não possui Tokens");
 			}

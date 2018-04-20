@@ -1,37 +1,59 @@
 package analisador.program;
 
-import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
+import analisador.constants.LMSConstantTokens;
 import analisador.domain.Token;
 import analisador.parsers.LMSParserTable;
 
 public class Sintatico {
+	
 
 	public static Sintatico instance;
+	private Stack<Integer> pilha;
 
+	public Sintatico() {
+		pilha = new Stack<Integer>();
+	}
+	
 	public static Sintatico getInstance() {
 		return (instance == null) ? new Sintatico() : instance;
 	}
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public boolean analiseSintatica(ArrayList<Token> listToken) {
-		if (listToken == null)
+	public boolean analiseSintatica(List<Token> listToken) {
+		if (listToken == null) {
 			return false;
-		ArrayList<Token> pilhaToken = (ArrayList) listToken.clone();
+		}
+		pilha.clear();
+		pilha.push(LMSConstantTokens.TOKEN_DOLLAR);
+		pilha.push(LMSParserTable.getInstance().START_SYMBOL);
 
 		int currentIndex = 0;
-		do {
-			Token tokenTopo = pilhaToken.get(currentIndex);
-			if (isTerminalState(tokenTopo.getCodigoParser()) || tokenTopo.getNome().equalsIgnoreCase("$")) {
-
-			} else {
-
+		while (pilha.size() > 0) {
+			Token tokenTopo = listToken.get(currentIndex++);
+			System.out.println(tokenTopo.getNome());
+			int pilhaCodigo = pilha.pop();
+			if (isTerminalState(pilhaCodigo)) {
+				//--
+			} else if (isNotTerminalState(pilhaCodigo)) {
+				int[] a = findProduction(tokenTopo.getCodigoParser(), pilhaCodigo);
+				for (int i = a.length-1; i >= 0; i--) {
+					pilha.push(a[i]);
+					
+				}
 			}
-			currentIndex++;
-
-		} while (pilhaToken == null || pilhaToken.size() < 1);
+		}
 
 		return true;
+	}
+	
+	private int[] findProduction(int codigoToken, int codigoPilha) {
+		int p = LMSParserTable.getInstance().LMS_PARSER_TABLE[codigoPilha - LMSParserTable.getInstance().FIRST_NON_TERMINAL][codigoToken - 1];
+		if (p >= 0) {
+			return LMSParserTable.getInstance().LMS_PRODUCTIONS[p];
+		}
+		return null;
 	}
 
 	/* ########################## MÉTODOS ULTILITÁRIOS ########################## */

@@ -1,0 +1,6 @@
+program testeproc1;
+var
+	x,y,z:integer;
+begin
+	z:=0;
+end.
