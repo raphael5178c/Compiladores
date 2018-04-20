@@ -1,0 +1,10 @@
+program testeproc1;
+var
+	x,y,z:integer;
+begin
+	if x > 4 then
+	begin
+		z:=0
+		y:=7
+	end
+end.
