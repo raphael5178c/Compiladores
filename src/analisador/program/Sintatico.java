@@ -38,6 +38,7 @@ public class Sintatico {
 				//--
 			} else if (isNotTerminalState(pilhaCodigo)) {
 				int[] a = findProduction(tokenTopo.getCodigoParser(), pilhaCodigo);
+				currentIndex--;
 				for (int i = a.length-1; i >= 0; i--) {
 					pilha.push(a[i]);
 					
