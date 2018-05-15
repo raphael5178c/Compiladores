@@ -1,5 +1,7 @@
 package analisador.util;
 
+import java.util.HashMap;
+import java.util.Map.Entry;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -15,6 +17,30 @@ public class ValueUtil {
 			return false;
 		}
 		return false;
+	}
+	
+	public static boolean isEmpty(int value) {
+		return value == 0;
+	}
+	
+	public static boolean isNotEmpty(int value) {
+		return !isEmpty(value);
+	}
+	
+	public static boolean isEmpty(Entry<?, ?> entry) {
+		return entry != null;
+	}
+	
+	public static boolean isNotEmpty(Entry<?, ?> entry) {
+		return !isEmpty(entry);
+	}
+	
+	public static boolean isEmpty(HashMap<?, ?> hash) {
+		return hash == null;
+	}
+	
+	public static boolean isNotEmpty(HashMap<?, ?> hash) {
+		return !isEmpty(hash);
 	}
 
 	public static boolean isNotEmpty(Object obj) {
