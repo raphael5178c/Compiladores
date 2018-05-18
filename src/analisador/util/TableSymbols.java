@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Objects;
 
-public class TableSymbols {
+public class TableSymbols extends HashEvent {
 	
 	private static HashMap<Integer, String> hashTable;
 	private boolean inicialized;
@@ -115,43 +115,6 @@ public class TableSymbols {
 		return oldValue != null;
 	}
 
-	// -------- EVENT ACTIONS
-	private void afterInsert(HashMap<Integer, String> hashTableToInsert, String value, int indexOfHashValue) {
-		// Ação antes o metodo de inserção
-	}
-
-	private void beforeInsert(HashMap<Integer, String> hashTableToInsert, String value, int indexOfHashValue) {
-		// Ação após o metodo de inserção
-	}
-
-	private void beforeSearch(Integer key) {
-		// Ação antes o metodo de busca
-	}
-	
-	private void beforeSearch(String value) {
-		// Ação antes o metodo de busca
-	}
-	
-	private void afterSearch(Integer key, String valueLocalized) {
-		// Ação após o metodo de busca
-	}
-	
-	private void beforeDelete(Integer key) {
-		// TODO Auto-generated method stub
-	}
-	
-	private void afterDelete(Integer key, String previousValue) {
-		// TODO Auto-generated method stub
-	}
-	
-	private void beforeAlter(Integer key, String newValue) {
-		// TODO Auto-generated method stub
-	}
-
-	private void afterAlter(Integer key, String newValue, String oldValue) {
-		// TODO Auto-generated method stub
-	}
-	
 	// ---------- GET SET
 	public boolean isInicialized() {
 		return inicialized;

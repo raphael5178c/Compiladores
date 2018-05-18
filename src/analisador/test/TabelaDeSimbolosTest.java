@@ -13,21 +13,25 @@ public class TabelaDeSimbolosTest {
 		insertValues(table);
 		printValues(table);
 		System.out.println("============ FIM INSERT ============");
-		
+
+		System.out.println();
 		System.out.println("============ INICIO ALTER ============");
 		alterValues(table);
 		printValues(table);
 		System.out.println("============ FIM ALTER ============");
 		
+		System.out.println();
 		System.out.println("============ INICIO DELETE ============");
 		deleteValues(table);
 		printValues(table);
 		System.out.println("============ FIM DELETE ============");
 		
+		System.out.println();
 		System.out.println("============ INICIO BUSCA INEXISTENTE ============");
 		getElementInexistente(table);
 		System.out.println("============ FIM BUSCA INEXISTENTE ============");
 		
+		System.out.println();
 		System.out.println("============ INICIO BUSCA 3 ELEMENTOS ============");
 		getElementsExistentes(table);
 		System.out.println("============ FIM BUSCA 3 ELEMENTOS ============");
@@ -72,7 +76,7 @@ public class TabelaDeSimbolosTest {
 	}
 
 	private static void insertValues(TableSymbols table) {
-		System.out.println("1- "+table.insertValue("ALC"));
+		System.out.println("1- "+table.insertValue("CASA"));
 		System.out.println("2- "+table.insertValue("DLC"));
 		System.out.println("3- "+table.insertValue("AXLC"));
 		System.out.println("4- "+table.insertValue("ASPD"));
@@ -82,7 +86,6 @@ public class TabelaDeSimbolosTest {
 		System.out.println("8- "+table.insertValue("TEST"));
 		System.out.println("9- "+table.insertValue("TESTINSERT"));
 		System.out.println("10- "+table.insertValue("ABLABLa"));
-		System.out.println("============ FIM INSERT ============");
 	}
 	
 }
