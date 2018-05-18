@@ -8,6 +8,7 @@ public class TableSymbols extends HashEvent {
 	
 	private static HashMap<Integer, String> hashTable;
 	private boolean inicialized;
+	public static int qtValuesInserted;
 
 	public TableSymbols() {
 		this.setInicialized(true);
@@ -61,7 +62,7 @@ public class TableSymbols extends HashEvent {
 		if(ValueUtil.isEmpty(value)) {
 			return false;
 		}
-		return doInsert(hashTable, value, MathUtil.getHashValue(value, hashTable));
+		return doInsert(hashTable, value, MathUtil.getHashValue(value));
 	}
 	
 	private boolean doInsert(HashMap<Integer, String> hashTableToInsert, String value, int indexOfHashValue) {
@@ -124,7 +125,7 @@ public class TableSymbols extends HashEvent {
 		this.inicialized = inicialized;
 	}
 	
-	public HashMap<Integer, String> getHashTable() {
+	public static HashMap<Integer, String> getHashTable() {
 		return TableSymbols.hashTable;
 	}
 	

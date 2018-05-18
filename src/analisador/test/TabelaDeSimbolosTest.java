@@ -69,14 +69,14 @@ public class TabelaDeSimbolosTest {
 
 	private static void printValues(TableSymbols table) {
 		System.out.println("########## IMPRIMINDO MODULO ##########");
-		for (Entry<Integer, String> entry : table.getHashTable().entrySet()) {
+		for (Entry<Integer, String> entry : TableSymbols.getHashTable().entrySet()) {
 			System.out.println("KEY: "+ entry.getKey() + " | VALUE: "+ entry.getValue());
 		}
 		System.out.println("########## FIM IMPRESSÃO ##########");
 	}
 
 	private static void insertValues(TableSymbols table) {
-		System.out.println("1- "+table.insertValue("CASA"));
+		System.out.println("1- "+table.insertValue("ALC"));
 		System.out.println("2- "+table.insertValue("DLC"));
 		System.out.println("3- "+table.insertValue("AXLC"));
 		System.out.println("4- "+table.insertValue("ASPD"));
