@@ -4,45 +4,47 @@ import java.util.HashMap;
 import java.util.Map.Entry;
 import java.util.Objects;
 
+import analisador.domain.Simbolo;
+
 public class TableSymbols extends HashEvent {
 	
-	private static HashMap<Integer, String> hashTable;
+	private static HashMap<Integer, Simbolo> hashTable;
 	private boolean inicialized;
 	public static int qtValuesInserted;
 
 	public TableSymbols() {
 		this.setInicialized(true);
-		hashTable = new HashMap<Integer, String>();
+		hashTable = new HashMap<Integer, Simbolo>();
 	}
 	
 	// -------- GET
-	public String getValueByKey(Integer key) {
+	public Simbolo getValueByKey(Integer key) {
 		if(ValueUtil.isEmpty(key)) {
 			return null;
 		}
 		beforeSearch(key);
-		String valueLocalized = hashTable.get(key);
+		Simbolo valueLocalized = hashTable.get(key);
 		afterSearch(key, valueLocalized);
 		return valueLocalized;
 	}
 
-	public Integer getKeyByValue(String value) {
+	public Integer getKeyByValue(Simbolo value) {
 		if(ValueUtil.isEmpty(value)) {
 			return null;
 		}
 		beforeSearch(value);
-		Entry<Integer, String> valueLocalized = getValue(hashTable, value);
+		Entry<Integer, Simbolo> valueLocalized = getValue(hashTable, value);
 		if(valueLocalized == null) return null;
 		Integer keyLocalized = valueLocalized.getKey();
 		afterSearch(keyLocalized, value);
 		return keyLocalized;
 	}
 	
-	public String getValue(String value) {
+	public Simbolo getValue(Simbolo value) {
 		if(ValueUtil.isEmpty(value)) {
 			return null;
 		}
-		Entry<Integer, String> entryGet = getValue(hashTable, value);
+		Entry<Integer, Simbolo> entryGet = getValue(hashTable, value);
 		if (entryGet == null) {
 			return null;
 		}
@@ -58,14 +60,14 @@ public class TableSymbols extends HashEvent {
 	}
 	
 	// -------- INSERT
-	public boolean insertValue(String value) {
+	public boolean insertValue(Simbolo value) {
 		if(ValueUtil.isEmpty(value)) {
 			return false;
 		}
-		return doInsert(hashTable, value, MathUtil.getHashValue(value));
+		return doInsert(hashTable, value, MathUtil.getHashValue(value.getNomeSimbolo()));
 	}
 	
-	private boolean doInsert(HashMap<Integer, String> hashTableToInsert, String value, int indexOfHashValue) {
+	private boolean doInsert(HashMap<Integer, Simbolo> hashTableToInsert, Simbolo value, int indexOfHashValue) {
 		if(ValueUtil.isEmpty(hashTableToInsert) || ValueUtil.isEmpty(value)) {
 			return false;
 		}
@@ -76,7 +78,7 @@ public class TableSymbols extends HashEvent {
 	}
 	
 	// -------- DELETE
-	public boolean deleteByValue(String value) {
+	public boolean deleteByValue(Simbolo value) {
 		if(ValueUtil.isEmpty(value)) {
 			return false;
 		}
@@ -87,7 +89,7 @@ public class TableSymbols extends HashEvent {
 		return deleteByKey(key);
 	}
 	
-	public boolean delete(Entry<Integer, String> hashEntry) {
+	public boolean delete(Entry<Integer, Simbolo> hashEntry) {
 		if(ValueUtil.isEmpty(hashEntry)) {
 			return false;
 		}
@@ -99,19 +101,19 @@ public class TableSymbols extends HashEvent {
 			return false;
 		}
 		beforeDelete(key);
-		String previousValue = hashTable.remove(key);
+		Simbolo previousValue = hashTable.remove(key);
 		afterDelete(key, previousValue);
 		return ValueUtil.isNotEmpty(previousValue) ? true : false;
 		
 	}
 	
 	//ALTERAÇÃO
-	public boolean alterByKey(Integer key, String newValue) {
+	public boolean alterByKey(Integer key, Simbolo newValue) {
 		if(ValueUtil.isEmpty(key) || ValueUtil.isEmpty(newValue) || ValueUtil.isEmpty(getValueByKey(key))) {
 			return false;
 		}
 		beforeAlter(key, newValue);
-		String oldValue = hashTable.put(key, newValue);
+		Simbolo oldValue = hashTable.put(key, newValue);
 		afterAlter(key, newValue, oldValue);
 		return oldValue != null;
 	}
@@ -125,7 +127,7 @@ public class TableSymbols extends HashEvent {
 		this.inicialized = inicialized;
 	}
 	
-	public static HashMap<Integer, String> getHashTable() {
+	public static HashMap<Integer, Simbolo> getHashTable() {
 		return TableSymbols.hashTable;
 	}
 	

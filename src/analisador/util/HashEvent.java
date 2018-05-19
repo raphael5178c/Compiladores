@@ -2,13 +2,15 @@ package analisador.util;
 
 import java.util.HashMap;
 
+import analisador.domain.Simbolo;
+
 public class HashEvent {
 	
-		public void afterInsert(HashMap<Integer, String> hashTableToInsert, String value, int indexOfHashValue) {
+		public void afterInsert(HashMap<Integer, Simbolo> hashTableToInsert, Simbolo value, int indexOfHashValue) {
 			
 		}
 
-		public void beforeInsert(HashMap<Integer, String> hashTableToInsert, String value, int indexOfHashValue) {
+		public void beforeInsert(HashMap<Integer, Simbolo> hashTableToInsert, Simbolo value, int indexOfHashValue) {
 			// Ação após o metodo de inserção
 		}
 
@@ -16,11 +18,11 @@ public class HashEvent {
 			// Ação antes o metodo de busca
 		}
 		
-		public void beforeSearch(String value) {
+		public void beforeSearch(Simbolo value) {
 			// Ação antes o metodo de busca
 		}
 		
-		public void afterSearch(Integer key, String valueLocalized) {
+		public void afterSearch(Integer key, Simbolo valueLocalized) {
 			// Ação após o metodo de busca
 		}
 		
@@ -28,15 +30,15 @@ public class HashEvent {
 			// TODO Auto-generated method stub
 		}
 		
-		public void afterDelete(Integer key, String previousValue) {
+		public void afterDelete(Integer key, Simbolo previousValue) {
 			// TODO Auto-generated method stub
 		}
 		
-		public void beforeAlter(Integer key, String newValue) {
+		public void beforeAlter(Integer key, Simbolo newValue) {
 			// TODO Auto-generated method stub
 		}
 
-		public void afterAlter(Integer key, String newValue, String oldValue) {
+		public void afterAlter(Integer key, Simbolo newValue, Simbolo oldValue) {
 			// TODO Auto-generated method stub
 		}
 		

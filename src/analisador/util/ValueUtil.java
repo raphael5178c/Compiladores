@@ -6,7 +6,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ValueUtil {
-
+	
+	public static final String VALOR_NI = "";
+	
 	public static boolean isEmpty(Object obj) {
 		try {
 			if (obj.equals(null))
