@@ -11,7 +11,7 @@ public class Semantico {
 	public static int ponteiro_area_literais;
 	public static int deslocamento_conforme_base;
 	
-	public void gerenciaAcoesSemanticas(int acaoSemantica, Token token) throws Exception {
+	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token) throws Exception {
 		switch (acaoSemantica) {
 			case SemanticActionsConstant.RECONHECE_NOME_PROGRAMA:
 				SemanticActionsFunctions.reconheceNomePrograma();

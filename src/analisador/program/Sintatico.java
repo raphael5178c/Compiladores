@@ -39,6 +39,11 @@ public class Sintatico {
 				currentIndex = verificaTokenTerminal(listToken, currentIndex, pilhaCodigo);
 			} else if (isNotTerminalState(pilhaCodigo)) {
 				verificaTokenNaoTerminal(pilhaCodigo);
+			} else if (isSemanticState(pilhaCodigo)) {
+				// verificar por que não está entrando aqui
+				// converter codigo gals para ação semantica e chamar o metodo
+				int valorConvertido = pilhaCodigo;
+				Semantico.gerenciaAcoesSemanticas(valorConvertido, tokenAtual);
 			}
 		}
 
@@ -84,7 +89,7 @@ public class Sintatico {
 	/* ########################## MÉTODOS ULTILITÁRIOS ########################## */
 
 	public boolean isTerminalState(int currentState) {
-		return (LMSParserTable.getInstance().FIRST_NON_TERMINAL > currentState);
+		return (currentState < LMSParserTable.getInstance().FIRST_NON_TERMINAL);
 	}
 
 	public boolean isNotTerminalState(int currentState) {
@@ -92,7 +97,7 @@ public class Sintatico {
 	}
 
 	public boolean isSemanticState(int currentState) {
-		return (!isTerminalState(currentState) & !isNotTerminalState(currentState));
+		return currentState >= LMSParserTable.getInstance().FIRST_SEMANTIC_ACTION;
 	}
 	
 	private boolean isValorPilhaInicioOuFimArquivo(int pilhaCodigo) {
