@@ -22,7 +22,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterLabelDeclareRotulo() {
-		// TODO Falta Implementar essa ação Semântica
+		return;
 	}
 
 	public static void econtradoRotuloVarParametro() {
@@ -58,11 +58,11 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void identificadorInstrucaoRotuladaOrAtribuicao() {
-		// TODO Falta Implementar essa ação Semântica
+		return;
 	}
 
 	public static void instrucaoRotulada() {
-		// TODO Falta Implementar essa ação Semântica
+		return;
 	}
 
 	public static void atribuicaoParteEsquerda() {
@@ -86,7 +86,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void comandoGoto() {
-		// TODO Falta Implementar essa ação Semântica
+		return;
 	}
 
 	public static void afterExpressaoNoIf() {
@@ -174,27 +174,27 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void comparacao01() {
-		// TODO Falta Implementar essa ação Semântica
+		// TODO Falta Implementar essa ação Semântica =
 	}
 
 	public static void comparacao02() {
-		// TODO Falta Implementar essa ação Semântica
+		// TODO Falta Implementar essa ação Semântica <
 	}
 
 	public static void comparacao03() {
-		// TODO Falta Implementar essa ação Semântica
+		// TODO Falta Implementar essa ação Semântica >
 	}
 
 	public static void comparacao04() {
-		// TODO Falta Implementar essa ação Semântica
+		// TODO Falta Implementar essa ação Semântica >=
 	}
 
 	public static void comparacao05() {
-		// TODO Falta Implementar essa ação Semântica
+		// TODO Falta Implementar essa ação Semântica <=
 	}
 
 	public static void comparacao06() {
-		// TODO Falta Implementar essa ação Semântica
+		// TODO Falta Implementar essa ação Semântica <>
 	}
 
 	public static void expressaoOperandoSinalUnario() {
