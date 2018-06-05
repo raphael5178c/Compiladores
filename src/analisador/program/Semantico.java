@@ -1,8 +1,15 @@
 package analisador.program;
 
+import java.util.Stack;
+
 import analisador.constants.SemanticActionsConstant;
 import analisador.domain.Token;
+import analisador.hipotetica.AreaInstrucoes;
+import analisador.hipotetica.AreaLiterais;
+import analisador.hipotetica.Hipotetica;
+import analisador.hipotetica.InstrucoesHipotetica;
 import analisador.util.ExceptionUtil;
+import analisador.util.TableSymbols;
 
 public class Semantico {
 	
@@ -10,6 +17,29 @@ public class Semantico {
 	public static int proxima_Instrucao;
 	public static int ponteiro_area_literais;
 	public static int deslocamento_conforme_base;
+	public static int acaoAcumulada;
+	
+	public static Hipotetica hipotetica;
+	public static AreaInstrucoes areaInstrucoes;
+	public static AreaLiterais areaLiterais;
+	
+	public static InstrucoesHipotetica instrucoesHipotetica;
+	public static Stack<Integer> ifs;
+	public static Stack<Integer> whiles;
+	public static Stack<Integer> repeats;
+	public static Stack<Integer> procedures;
+	public static Stack<Integer> parametros;
+	public static Stack<Integer> cases;
+	public static Stack<Integer> fors;
+	public static TableSymbols tabelaSimbolos;
+	
+	public static String nomeProcedure;
+	public static String tipo_identificador;
+	public static boolean temParametro;
+	public static int numeroParametros;
+	public static int numeroParametrosEfetivos;
+	
+	public static String nomeContexto;
 	
 	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token) throws Exception {
 		switch (acaoSemantica) {
@@ -17,7 +47,7 @@ public class Semantico {
 				SemanticActionsFunctions.reconheceNomePrograma();
 			break;
 			case SemanticActionsConstant.RECONHECE_FINAL_PROGRAMA:
-				SemanticActionsFunctions.reconheceFinalPrograma();
+				SemanticActionsFunctions.reconheceFinalPrograma(token);
 			break;
 			case SemanticActionsConstant.APOS_DECLARACAO_VARIAVEL:
 				SemanticActionsFunctions.afterDeclareVariable();
@@ -65,7 +95,7 @@ public class Semantico {
 				SemanticActionsFunctions.chamadaProcedure();
 			break;
 			case SemanticActionsConstant.AFTER_CALL:
-				SemanticActionsFunctions.afterCall();
+				SemanticActionsFunctions.afterCall(token);
 			break;
 			case SemanticActionsConstant.AFTER_EXPRESSAO_COMANDO_CALL:
 				SemanticActionsFunctions.afterExpressaoComandoCall();
@@ -104,7 +134,7 @@ public class Semantico {
 				SemanticActionsFunctions.identificadorVariavel();
 			break;
 			case SemanticActionsConstant.AFTER_LITERAL_NA_INSTRUCAO_WRITELN:
-				SemanticActionsFunctions.afterLiteralNaInstrucaoWriteln();
+				SemanticActionsFunctions.afterLiteralNaInstrucaoWriteln(token);
 			break;
 			case SemanticActionsConstant.WRITELN_AFTER_EXPRESSAO:
 				SemanticActionsFunctions.writelnAfterExpressao();

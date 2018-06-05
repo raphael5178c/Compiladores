@@ -117,6 +117,11 @@ public class TableSymbols extends HashEvent {
 		afterAlter(key, newValue, oldValue);
 		return oldValue != null;
 	}
+	
+	//GET SIZE
+	public int size() {
+		return (hashTable != null) ? hashTable.size() : 0;
+	}
 
 	// ---------- GET SET
 	public boolean isInicialized() {

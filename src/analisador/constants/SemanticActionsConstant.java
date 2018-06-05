@@ -43,12 +43,12 @@ public class SemanticActionsConstant {
 	public static final int AFTER_EXPRESSAO_VALOR_INICIAL = 138;
 	public static final int AFTER_EXPRESSAO_VALOR_FINAL = 139;
 	public static final int AFTER_COMANDO_EM_FOR = 140;
-	public static final int COMPARACAO_01 = 141;
-	public static final int COMPARACAO_02 = 142;
-	public static final int COMPARACAO_03 = 143;
-	public static final int COMPARACAO_04 = 144;
-	public static final int COMPARACAO_05 = 145;
-	public static final int COMPARACAO_06 = 146;
+	public static final int COMPARACAO_01 = 141; // =
+	public static final int COMPARACAO_02 = 142; // <
+	public static final int COMPARACAO_03 = 143; // >
+	public static final int COMPARACAO_04 = 144; // >=
+	public static final int COMPARACAO_05 = 145; // <=
+	public static final int COMPARACAO_06 = 146; // <>
 	public static final int EXPRESSAO_OPERANDO_SINAL_UNARIO = 147;
 	public static final int EXPRESSAO_SOMA = 148;
 	public static final int EXPRESSAO_SUBTRACAO = 149;
