@@ -5,6 +5,7 @@ import java.util.Stack;
 
 import analisador.constants.LMSConstantTokens;
 import analisador.domain.Token;
+import analisador.hipotetica.Hipotetica;
 import analisador.parsers.LMSParserTable;
 import analisador.util.ExceptionUtil;
 
@@ -13,6 +14,7 @@ public class Sintatico {
 
 	public static Sintatico instance;
 	private Stack<Integer> pilha;
+	private static Token previousToken;
 	private static Token tokenAtual;
 
 	public Sintatico() {
@@ -23,7 +25,7 @@ public class Sintatico {
 		return (instance == null) ? new Sintatico() : instance;
 	}
 
-	public boolean analiseSintatica(List<Token> listToken) throws Exception {
+	public boolean analiseSintatica(List<Token> listToken, boolean goSemantica) throws Exception {
 		if (listToken == null) {
 			return false;
 		}
@@ -39,14 +41,11 @@ public class Sintatico {
 				currentIndex = verificaTokenTerminal(listToken, currentIndex, pilhaCodigo);
 			} else if (isNotTerminalState(pilhaCodigo)) {
 				verificaTokenNaoTerminal(pilhaCodigo);
-			} else if (isSemanticState(pilhaCodigo)) {
-				// verificar por que não está entrando aqui
-				// converter codigo gals para ação semantica e chamar o metodo
-				int valorConvertido = pilhaCodigo;
-				Semantico.gerenciaAcoesSemanticas(valorConvertido, tokenAtual);
+			} else if (isSemanticState(pilhaCodigo) && goSemantica) {
+				Semantico.gerenciaAcoesSemanticas(pilhaCodigo, previousToken);
 			}
 		}
-
+		Hipotetica.Interpreta(Semantico.areaInstrucoes, Semantico.areaLiterais);
 		return true;
 	}
 
@@ -71,6 +70,7 @@ public class Sintatico {
 	private int verificaTokenTerminal(List<Token> listToken, int currentIndex, int pilhaCodigo) throws Exception {
 		if(pilhaCodigo == tokenAtual.getCodigoParser() && !pilha.isEmpty()) {
 			try {
+				previousToken = tokenAtual;
 				tokenAtual = listToken.get(currentIndex++);
 			} catch (Exception e) {
 			}

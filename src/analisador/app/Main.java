@@ -29,11 +29,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import analisador.constants.LMSConstantTokens;
+import analisador.domain.Instrucao;
+import analisador.domain.Literal;
 import analisador.domain.PalavraReservada;
 import analisador.domain.Token;
 import analisador.program.Lexico;
+import analisador.program.Semantico;
 import analisador.program.Sintatico;
 import analisador.util.ConsoleUtil;
+import javax.swing.JTabbedPane;
 
 public class Main extends JFrame{
 	
@@ -44,8 +48,10 @@ public class Main extends JFrame{
 	public static JTextArea txtSaidaConsole = new JTextArea();
 	public static JTextArea txtFonte = new JTextArea();
 	public static final long serialVersionUID = 1L;
-	public static JTable table;
 	List<Token> tokenList;
+	private JTable table;
+	private JTable tableInstrucoes;
+	private JTable tableLiterais;
 	
 	public static void main(String[] args) {
 		setAllTokens();
@@ -105,8 +111,6 @@ public class Main extends JFrame{
 		
 		JScrollPane scrollPane_1 = new JScrollPane();
 		
-		JScrollPane scrollPane_2 = new JScrollPane();
-		
 		JButton btnAnaliseLexica = new JButton("Analise L\u00E9xica");
 		btnAnaliseLexica.addMouseListener(new MouseAdapter() {
 			@Override
@@ -123,7 +127,7 @@ public class Main extends JFrame{
 		btnAnaliseSinttica.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				analiseSintatica();
+				analiseSintatica(false);
 			}
 		});
 		btnAnaliseSinttica.addActionListener(new ActionListener() {
@@ -132,21 +136,30 @@ public class Main extends JFrame{
 		});
 		
 		JButton btnAnaliseSemantica = new JButton("Analise Semantica");
+		btnAnaliseSemantica.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				analiseSintatica(true);
+			}
+		});
 		
 		JLabel lblConsole = new JLabel("Console:");
+		
+		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		GroupLayout groupLayout = new GroupLayout(getContentPane());
 		groupLayout.setHorizontalGroup(
 			groupLayout.createParallelGroup(Alignment.LEADING)
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
-					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+					.addGroup(groupLayout.createParallelGroup(Alignment.TRAILING)
 						.addComponent(lblConsole, GroupLayout.PREFERRED_SIZE, 58, GroupLayout.PREFERRED_SIZE)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 620, Short.MAX_VALUE)
 							.addPreferredGap(ComponentPlacement.RELATED)
-							.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
-						.addComponent(scrollPane, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 924, Short.MAX_VALUE)
-						.addGroup(Alignment.TRAILING, groupLayout.createSequentialGroup()
+							.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+							.addGap(1))
+						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 924, Short.MAX_VALUE)
+						.addGroup(groupLayout.createSequentialGroup()
 							.addComponent(btnAnaliseLexica, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addComponent(btnAnaliseSinttica, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
@@ -159,8 +172,8 @@ public class Main extends JFrame{
 				.addGroup(groupLayout.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(groupLayout.createParallelGroup(Alignment.LEADING)
-						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
-						.addComponent(scrollPane_2, GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
+						.addComponent(tabbedPane, GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE)
+						.addComponent(scrollPane_1, GroupLayout.DEFAULT_SIZE, 334, Short.MAX_VALUE))
 					.addPreferredGap(ComponentPlacement.RELATED)
 					.addComponent(lblConsole, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
 					.addGap(3)
@@ -173,27 +186,21 @@ public class Main extends JFrame{
 					.addGap(7))
 		);
 		
+		JScrollPane scrollPane_2 = new JScrollPane();
+		tabbedPane.addTab("Léxico", null, scrollPane_2, null);
 		table = new JTable();
-		table.setEnabled(false);
-		table.setModel(new DefaultTableModel(
-			new Object[][] {
-			},
-			new String[] {
-				"C\u00F3digo do Token", "Token", "Descri\u00E7\u00E3o"
-			}
-		) {
-			private static final long serialVersionUID = 1L;
-			@SuppressWarnings("rawtypes")
-			Class[] columnTypes = new Class[] {
-				String.class, String.class, String.class
-			};
-			@SuppressWarnings({ "unchecked", "rawtypes" })
-			public Class getColumnClass(int columnIndex) {
-				return columnTypes[columnIndex];
-			}
-		});
+		table.setEnabled(true);
 		scrollPane_2.setViewportView(table);
 		
+		JScrollPane scrollPane_3 = new JScrollPane();
+		tabbedPane.addTab("Instruções", null, scrollPane_3, null);
+		tableInstrucoes = new JTable();
+		scrollPane_3.setViewportView(tableInstrucoes);
+		
+		JScrollPane scrollPane_4 = new JScrollPane();
+		tabbedPane.addTab("Literais", null, scrollPane_4, null);
+		tableLiterais = new JTable();
+		scrollPane_4.setViewportView(tableLiterais);
 		
 		scrollPane_1.setViewportView(txtFonte);
 		scrollPane.setViewportView(txtSaidaConsole);
@@ -212,15 +219,46 @@ public class Main extends JFrame{
 		}
 	}
 	
-	protected void analiseSintatica() {
+	protected void analiseSintatica(boolean goSemantica) {
+		String [] colunasInstrucoes = {"Instrução", "Arg 1", "Arg 2"};
+		String [] colunasLiterais = {"End.", "Literal"};
 		try {
 			if(tokenList == null || tokenList.size() == 0) {
 				analiseLexica();
 			}
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
-			Sintatico.getInstance().analiseSintatica(tokenList);
+			Sintatico.getInstance().analiseSintatica(tokenList, goSemantica);
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");
+			if(goSemantica && Semantico.instrucoesHipotetica != null) {
+				if(Semantico.instrucoesHipotetica.listIntrucao != null) {
+					String[][] dados = new String[Semantico.instrucoesHipotetica.listIntrucao.size()][3];
+					for (int i = 0 ; i < Semantico.instrucoesHipotetica.listIntrucao.size(); i++) {
+						Instrucao instrucao = Semantico.instrucoesHipotetica.listIntrucao.get(i);
+						dados[i][0] = String.valueOf(instrucao.nmInstrucao);
+						dados[i][1] = String.valueOf(instrucao.geralA);
+						dados[i][2] = String.valueOf(instrucao.geralB);
+					}
+					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+					tableInstrucoes.setModel(new DefaultTableModel(dados, colunasInstrucoes));
+					tableInstrucoes.setDefaultRenderer(String.class, centerRenderer);		
+				}
+				if(Semantico.instrucoesHipotetica.listLiteral != null) {
+					String[][] dados = new String[Semantico.instrucoesHipotetica.listLiteral.size()][2];
+					for (int i = 0 ; i < Semantico.instrucoesHipotetica.listLiteral.size(); i++) {
+						Literal literal = Semantico.instrucoesHipotetica.listLiteral.get(i);
+						dados[i][0] = String.valueOf(literal.endMemoria);
+						dados[i][1] = String.valueOf(literal.nmLiteral);
+					}
+					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+					tableLiterais.setModel(new DefaultTableModel(dados, colunasLiterais));
+					tableLiterais.setDefaultRenderer(String.class, centerRenderer);		
+				}
+			}
 		} catch (Exception ex) {
+			tableInstrucoes.setModel(new DefaultTableModel(null, colunasInstrucoes));
+			tableLiterais.setModel(new DefaultTableModel(null, colunasLiterais));
 			ConsoleUtil.getInstance().setTxtErrorConsole(ex);
 		}
 	}
@@ -260,5 +298,4 @@ public class Main extends JFrame{
 		if(file == null) return null;
 		return file.toPath();
 	}
-
 }

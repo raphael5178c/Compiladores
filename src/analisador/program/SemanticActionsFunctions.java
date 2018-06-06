@@ -194,6 +194,7 @@ public class SemanticActionsFunctions {
 		Hipotetica.IncluirAL(Semantico.areaLiterais, tokenLiteral.getNome());
 		Semantico.ponteiro_area_literais++;
 		Semantico.instrucoesHipotetica.insert(23, 0, Semantico.areaLiterais.LIT - 1);
+		Semantico.instrucoesHipotetica.insertLiteral(tokenLiteral.getNome(), Semantico.areaLiterais.LIT - 1);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 23, 0, Semantico.areaLiterais.LIT - 1);
 	}
 

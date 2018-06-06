@@ -1,13 +1,16 @@
 package analisador.hipotetica;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import analisador.domain.Instrucao;
+import analisador.domain.Literal;
 
 public class InstrucoesHipotetica {
 	
 	private String[] instrucaoHipotetica = new String[30];
-	public static List<Instrucao> listIntrucao;
+	public List<Instrucao> listIntrucao;
+	public List<Literal> listLiteral;
 	
 	public InstrucoesHipotetica() {
         this.instrucaoHipotetica[1] = "RETU";
@@ -42,15 +45,24 @@ public class InstrucoesHipotetica {
 	}
 	
 	public void insert(int numeroInstMaquinaVirutal) {
-		if(InstrucoesHipotetica.listIntrucao != null) {
-			InstrucoesHipotetica.listIntrucao.add(new Instrucao(this.instrucaoHipotetica[numeroInstMaquinaVirutal], numeroInstMaquinaVirutal));
+		if(listIntrucao == null) {
+			listIntrucao = new ArrayList<Instrucao>();
 		}
+		listIntrucao.add(new Instrucao(this.instrucaoHipotetica[numeroInstMaquinaVirutal], numeroInstMaquinaVirutal));
 	}
 	
 	public void insert(int numeroInstMaquinaVirutal, int geralA, int geralB) {
-		if(InstrucoesHipotetica.listIntrucao != null) {
-			InstrucoesHipotetica.listIntrucao.add(new Instrucao(this.instrucaoHipotetica[numeroInstMaquinaVirutal], numeroInstMaquinaVirutal, geralA, geralB));
+		if(listIntrucao == null) {
+			listIntrucao = new ArrayList<Instrucao>();
 		}
+		listIntrucao.add(new Instrucao(this.instrucaoHipotetica[numeroInstMaquinaVirutal], numeroInstMaquinaVirutal, geralA, geralB));
+	}
+	
+	public void insertLiteral(String nmLiteral, int endMemoria) {
+		if(listLiteral == null) {
+			listLiteral = new ArrayList<Literal>();
+		}
+		listLiteral.add(new Literal(nmLiteral, endMemoria));
 	}
 
 }
