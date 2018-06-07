@@ -12,7 +12,7 @@ Procedure calcula(y: integer);
 				fat := fat * i;
 		end;
 	begin
-		call fatorial(y): (*chama procedure local*)
+		call fatorial(y); (*chama procedure local*)
 		res := fat; (*inicia com o resultado do fatorial*)
 		for i := 1 to y do
 			res := res + i;
