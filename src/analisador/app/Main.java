@@ -115,6 +115,10 @@ public class Main extends JFrame{
 		btnAnaliseLexica.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				ConsoleUtil.getInstance().clearConsole();
+				table.setModel(new DefaultTableModel(null, new String[] {}));
+				tableInstrucoes.setModel(new DefaultTableModel(null, new String[] {}));
+				tableLiterais.setModel(new DefaultTableModel(null, new String[] {}));
 				analiseLexica();
 			}
 		});
@@ -127,6 +131,10 @@ public class Main extends JFrame{
 		btnAnaliseSinttica.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				ConsoleUtil.getInstance().clearConsole();
+				table.setModel(new DefaultTableModel(null, new String[] {}));
+				tableInstrucoes.setModel(new DefaultTableModel(null, new String[] {}));
+				tableLiterais.setModel(new DefaultTableModel(null, new String[] {}));
 				analiseSintatica(false);
 			}
 		});
@@ -139,6 +147,10 @@ public class Main extends JFrame{
 		btnAnaliseSemantica.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
+				ConsoleUtil.getInstance().clearConsole();
+				table.setModel(new DefaultTableModel(null, new String[] {}));
+				tableInstrucoes.setModel(new DefaultTableModel(null, new String[] {}));
+				tableLiterais.setModel(new DefaultTableModel(null, new String[] {}));
 				analiseSintatica(true);
 			}
 		});
@@ -223,9 +235,7 @@ public class Main extends JFrame{
 		String [] colunasInstrucoes = {"Instrução", "Arg 1", "Arg 2"};
 		String [] colunasLiterais = {"End.", "Literal"};
 		try {
-			if(tokenList == null || tokenList.size() == 0) {
-				analiseLexica();
-			}
+			analiseLexica();
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
 			Sintatico.getInstance().analiseSintatica(tokenList, goSemantica);
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");

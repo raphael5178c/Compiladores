@@ -3,6 +3,8 @@ package analisador.program;
 import java.util.Stack;
 
 import analisador.constants.SemanticActionsConstant;
+import analisador.domain.Instrucao;
+import analisador.domain.Simbolo;
 import analisador.domain.Token;
 import analisador.hipotetica.AreaInstrucoes;
 import analisador.hipotetica.AreaLiterais;
@@ -41,7 +43,18 @@ public class Semantico {
 	
 	public static String nomeContexto;
 	
-	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token) throws Exception {
+	public static int endIdentificador;
+	public static int lcProcedure;
+	
+	public static Instrucao instrucaoWhileTemp;
+	public static Instrucao instrucaoIfTemp;
+	public static Instrucao instrucaoElseTemp;
+	public static Simbolo atribuicaoTemp;
+	
+	public static String nome_atribuicao_esquerda;
+	public static String nome_identificador;
+	
+	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token, Token beforePreviusToken) throws Exception {
 		switch (acaoSemantica) {
 			case SemanticActionsConstant.RECONHECE_NOME_PROGRAMA:
 				SemanticActionsFunctions.reconheceNomePrograma();
@@ -56,22 +69,22 @@ public class Semantico {
 				SemanticActionsFunctions.afterLabelDeclareRotulo();
 			break;
 			case SemanticActionsConstant.ENCONTRADO_ROTULO_VAR_PARAMETRO:
-				SemanticActionsFunctions.econtradoRotuloVarParametro();
+				SemanticActionsFunctions.econtradoRotuloVarParametro(token);
 			break;
 			case SemanticActionsConstant.RECONHECIDO_NOME_CONSTANTE_DECLARACAO:
-				SemanticActionsFunctions.reconhecidoNomeConstanteDeclaracao();
+				SemanticActionsFunctions.reconhecidoNomeConstanteDeclaracao(token);
 			break;
 			case SemanticActionsConstant.RECONHECIDO_VALOR_CONSTANTE_DECLARACAO:
-				SemanticActionsFunctions.reconhecidoValorConstanteDeclaracao();
+				SemanticActionsFunctions.reconhecidoValorConstanteDeclaracao(token);
 			break;
 			case SemanticActionsConstant.BEFORE_LISTA_IDENTIFICADORES_DECLARACAO_VARIAVEIS:
 				SemanticActionsFunctions.beforeListaIdentificadoresDeclaracaoVariaveis();
 			break;
 			case SemanticActionsConstant.AFTER_NOME_PROCEDURE_DECLARACAO:
-				SemanticActionsFunctions.afterNomeProcedureDeclaracao();
+				SemanticActionsFunctions.afterNomeProcedureDeclaracao(token);
 			break;
 			case SemanticActionsConstant.AFTER_DECLARACAO_PROCEDURE:
-				SemanticActionsFunctions.afterDeclaracaoProcedure();
+				SemanticActionsFunctions.afterDeclaracaoProcedure(token);
 			break;
 			case SemanticActionsConstant.FIM_PROCEDURE:
 				SemanticActionsFunctions.fimProcedure();
@@ -80,19 +93,19 @@ public class Semantico {
 				SemanticActionsFunctions.beforeParametrosFormaisProcedure();
 			break;
 			case SemanticActionsConstant.IDENTIFICADOR_INSTRUCAO_ROTULADA_OU_ATRIBUICAO:
-				SemanticActionsFunctions.identificadorInstrucaoRotuladaOrAtribuicao();
+				SemanticActionsFunctions.identificadorInstrucaoRotuladaOrAtribuicao(token);
 			break;
 			case SemanticActionsConstant.INSTRUCAO_ROTULADA:
 				SemanticActionsFunctions.instrucaoRotulada();
 			break;
 			case SemanticActionsConstant.ATRIBUICAO_PARTE_ESQUERDA:
-				SemanticActionsFunctions.atribuicaoParteEsquerda();
+				SemanticActionsFunctions.atribuicaoParteEsquerda(token);
 			break;
 			case SemanticActionsConstant.AFTER_EXPRESSAO_ATRIBUICAO:
-				SemanticActionsFunctions.afterExpressaoAtribuicao();
+				SemanticActionsFunctions.afterExpressaoAtribuicao(token);
 			break;
 			case SemanticActionsConstant.CHAMADA_PROCEDURE:
-				SemanticActionsFunctions.chamadaProcedure();
+				SemanticActionsFunctions.chamadaProcedure(token);
 			break;
 			case SemanticActionsConstant.AFTER_CALL:
 				SemanticActionsFunctions.afterCall(token);
@@ -131,7 +144,7 @@ public class Semantico {
 				SemanticActionsFunctions.readlnInicio();
 			break;
 			case SemanticActionsConstant.IDENTIFICADOR_VARIAVEL:
-				SemanticActionsFunctions.identificadorVariavel();
+				SemanticActionsFunctions.identificadorVariavel(token);
 			break;
 			case SemanticActionsConstant.AFTER_LITERAL_NA_INSTRUCAO_WRITELN:
 				SemanticActionsFunctions.afterLiteralNaInstrucaoWriteln(token);
@@ -206,7 +219,7 @@ public class Semantico {
 				SemanticActionsFunctions.expressaoAnd();
 			break;
 			case SemanticActionsConstant.EXPRESSAO_INT:
-				SemanticActionsFunctions.expressaoInt();
+				SemanticActionsFunctions.expressaoInt(token);
 			break;
 			case SemanticActionsConstant.EXPRESSAO_NOT:
 				SemanticActionsFunctions.expressaoNot();

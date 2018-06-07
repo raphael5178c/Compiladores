@@ -53,8 +53,17 @@ public class TableSymbols extends HashEvent {
 	
 	public static <T, E> Entry<T, E> getValue(HashMap<T, E> map, E value) {
 		for (Entry<T, E> entry : map.entrySet()) {
-			if (!Objects.equals(value, entry.getValue())) continue;
+			if (!value.equals(entry.getValue())) continue;
 			return entry;
+		}
+		return null;
+	}
+	
+	public Simbolo getByQtValueInsertedNumber(int number) {
+		for (Entry<Integer, Simbolo> entry : getHashTable().entrySet()) {
+			if(entry.getValue().getQtValuesPilha() == number) {
+				return entry.getValue();
+			}
 		}
 		return null;
 	}
@@ -72,7 +81,9 @@ public class TableSymbols extends HashEvent {
 			return false;
 		}
 		beforeInsert(hashTableToInsert, value, indexOfHashValue);
+		value.setQtValuesPilha(qtValuesInserted);
 		hashTableToInsert.put(indexOfHashValue, value);
+		qtValuesInserted++;
 		afterInsert(hashTableToInsert, value, indexOfHashValue);
 		return true;
 	}
@@ -102,6 +113,9 @@ public class TableSymbols extends HashEvent {
 		}
 		beforeDelete(key);
 		Simbolo previousValue = hashTable.remove(key);
+		if(previousValue != null) {
+			qtValuesInserted--;
+		}
 		afterDelete(key, previousValue);
 		return ValueUtil.isNotEmpty(previousValue) ? true : false;
 		

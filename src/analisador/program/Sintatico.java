@@ -7,6 +7,7 @@ import analisador.constants.LMSConstantTokens;
 import analisador.domain.Token;
 import analisador.hipotetica.Hipotetica;
 import analisador.parsers.LMSParserTable;
+import analisador.util.ConsoleUtil;
 import analisador.util.ExceptionUtil;
 
 public class Sintatico {
@@ -14,6 +15,7 @@ public class Sintatico {
 
 	public static Sintatico instance;
 	private Stack<Integer> pilha;
+	private static Token twoTokenBeforeAtual; 
 	private static Token previousToken;
 	private static Token tokenAtual;
 
@@ -42,10 +44,14 @@ public class Sintatico {
 			} else if (isNotTerminalState(pilhaCodigo)) {
 				verificaTokenNaoTerminal(pilhaCodigo);
 			} else if (isSemanticState(pilhaCodigo) && goSemantica) {
-				Semantico.gerenciaAcoesSemanticas(pilhaCodigo, previousToken);
+				Semantico.gerenciaAcoesSemanticas(pilhaCodigo, previousToken, twoTokenBeforeAtual);
 			}
 		}
-		Hipotetica.Interpreta(Semantico.areaInstrucoes, Semantico.areaLiterais);
+		if(goSemantica) {
+			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise semantica do código de fonte...");
+			Hipotetica.Interpreta(Semantico.areaInstrucoes, Semantico.areaLiterais);
+			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise semantica do código de fonte...");
+		}
 		return true;
 	}
 
@@ -70,10 +76,12 @@ public class Sintatico {
 	private int verificaTokenTerminal(List<Token> listToken, int currentIndex, int pilhaCodigo) throws Exception {
 		if(pilhaCodigo == tokenAtual.getCodigoParser() && !pilha.isEmpty()) {
 			try {
+				try {
+					twoTokenBeforeAtual = listToken.get(currentIndex-2);
+				} catch (Exception e) { /* ignora exceção */ }
 				previousToken = tokenAtual;
 				tokenAtual = listToken.get(currentIndex++);
-			} catch (Exception e) {
-			}
+			} catch (Exception e) { /* ignora exceção */ }
 		} else {
 			throw new Exception(ExceptionUtil.getSyntaticErrorException(tokenAtual));
 		}

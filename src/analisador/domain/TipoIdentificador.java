@@ -5,5 +5,7 @@ public class TipoIdentificador {
 	public static final String ROTULO = "Rótulo";
 	public static final String VARIAVEL = "Variável";
 	public static final String PARAMETRO = "Parâmetro";
+	public static final String CONSTANTE = "Constante";
+	public static final String PROCEDURE = "Procedure";
 
 }

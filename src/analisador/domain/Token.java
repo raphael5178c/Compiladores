@@ -88,5 +88,16 @@ public class Token {
 	public void setCurrentlineNumber(int currentlineNumber) {
 		this.currentlineNumber = currentlineNumber;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		super.equals(obj);
+		Token token = (Token) obj;
+		return (this.acaoSemantica == token.acaoSemantica &&
+				this.codigo == token.codigo &&
+				this.codigoParser == token.codigoParser &&
+				this.nome.equals(token.nome) &&
+				this.tipo.equals(token.tipo));
+	}
 
 }
