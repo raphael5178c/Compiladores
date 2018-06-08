@@ -5,9 +5,8 @@ public class MathUtil {
 	public final static int FIRST_TABLE_SIZE = 25151;
 
 	public static int getHashValue(String value) {
-		int hash =  hash(value, TableSymbols.qtValuesInserted, FIRST_TABLE_SIZE);
-		TableSymbols.qtValuesInserted++;
-		return hash;
+//		int hash =  hash(value, TableSymbols.qtValuesInserted, FIRST_TABLE_SIZE);
+		return TableSymbols.qtValuesInserted++;
 	}
 
 	/**
@@ -26,3 +25,4 @@ public class MathUtil {
 	}
 
 }
+

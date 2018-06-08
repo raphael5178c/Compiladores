@@ -1,5 +1,6 @@
 package analisador.program;
 
+import java.util.List;
 import java.util.Stack;
 
 import analisador.constants.SemanticActionsConstant;
@@ -30,7 +31,7 @@ public class Semantico {
 	public static Stack<Integer> whiles;
 	public static Stack<Integer> repeats;
 	public static Stack<Integer> procedures;
-	public static Stack<Integer> parametros;
+	public static List<Simbolo> parametros;
 	public static Stack<Integer> cases;
 	public static Stack<Integer> fors;
 	public static TableSymbols tabelaSimbolos;
@@ -50,9 +51,12 @@ public class Semantico {
 	public static Instrucao instrucaoIfTemp;
 	public static Instrucao instrucaoElseTemp;
 	public static Simbolo atribuicaoTemp;
+	public static Simbolo constanteTemp;
 	
 	public static String nome_atribuicao_esquerda;
 	public static String nome_identificador;
+	
+	public static int numeroVariaveis;
 	
 	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token, Token beforePreviusToken) throws Exception {
 		switch (acaoSemantica) {

@@ -2,7 +2,6 @@ package analisador.util;
 
 import java.util.HashMap;
 import java.util.Map.Entry;
-import java.util.Objects;
 
 import analisador.domain.Simbolo;
 
@@ -82,7 +81,7 @@ public class TableSymbols extends HashEvent {
 		}
 		beforeInsert(hashTableToInsert, value, indexOfHashValue);
 		value.setQtValuesPilha(qtValuesInserted);
-		hashTableToInsert.put(indexOfHashValue, value);
+		Simbolo inserted = hashTableToInsert.put(indexOfHashValue, value);
 		qtValuesInserted++;
 		afterInsert(hashTableToInsert, value, indexOfHashValue);
 		return true;

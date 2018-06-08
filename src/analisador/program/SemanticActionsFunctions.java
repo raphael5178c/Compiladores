@@ -1,5 +1,7 @@
 package analisador.program;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import analisador.domain.Contexto;
@@ -37,10 +39,32 @@ public class SemanticActionsFunctions {
 		Semantico.whiles = new Stack<Integer>();
 		Semantico.repeats = new Stack<Integer>();
 		Semantico.procedures = new Stack<Integer>();
-		Semantico.parametros = new Stack<Integer>();
+		Semantico.parametros = new ArrayList<Simbolo>();
 		Semantico.cases = new Stack<Integer>();
 		Semantico.fors = new Stack<Integer>();
 		Semantico.tabelaSimbolos = new TableSymbols();
+		
+		Semantico.nomeProcedure = null;
+		Semantico.tipo_identificador = null;
+		Semantico.temParametro = false;
+		Semantico.numeroParametros = 0;
+		Semantico.numeroParametrosEfetivos = 0;
+		
+		Semantico.nomeContexto = null;
+		
+		Semantico.endIdentificador = 0;
+		Semantico.lcProcedure = 0;
+		
+		Semantico.instrucaoWhileTemp = null;
+		Semantico.instrucaoIfTemp = null;
+		Semantico.instrucaoElseTemp = null;
+		Semantico.atribuicaoTemp = null;
+		Semantico.constanteTemp = null;
+		
+		Semantico.nome_atribuicao_esquerda = null;
+		Semantico.nome_identificador = null;
+		
+		Semantico.numeroVariaveis = 0;
 		
 		Semantico.hipotetica = new Hipotetica();
 		Hipotetica.InicializaAI(Semantico.areaInstrucoes);
@@ -70,92 +94,79 @@ public class SemanticActionsFunctions {
 
 	public static void econtradoRotuloVarParametro(Token token) throws Exception {
         ++Semantico.acaoAcumulada;
-        Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, TipoIdentificador.PARAMETRO, Semantico.nivel_atual, token.getNome(), 0, 0));
         if (Semantico.tipo_identificador.equals(TipoIdentificador.ROTULO)) {
+        	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, TipoIdentificador.ROTULO, Semantico.nivel_atual, token.getNome(), 0, 0));
             if (simboloSearched != null && simboloSearched.getNivelDeclaracao() == Semantico.nivel_atual) {
                 throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Rótulo %s declarado no mesmo nível, na linha %s", token.getNome(), token.getCurrentlineNumber())));
             }
             Semantico.tabelaSimbolos.insertValue(new Simbolo(token, TipoIdentificador.ROTULO, Semantico.nivel_atual, token.getNome(), 0, 0));
         }
         if (Semantico.tipo_identificador.equals(TipoIdentificador.VARIAVEL)) {
+        	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, TipoIdentificador.VARIAVEL, Semantico.nivel_atual, token.getNome(), 0, 0));
             if (simboloSearched != null) {
                 throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Variável %s já foi declarada, na linha %s", token.getNome(), token.getCurrentlineNumber())));
             }
             Semantico.tabelaSimbolos.insertValue(new Simbolo(token, TipoIdentificador.VARIAVEL, Semantico.nivel_atual, token.getNome(), Semantico.deslocamento_conforme_base, 0));
             ++Semantico.deslocamento_conforme_base;
-            ++Semantico.nivel_atual;
+            ++Semantico.numeroVariaveis;
         }
         if (!Semantico.tipo_identificador.equals(TipoIdentificador.PARAMETRO)) return;
+        Simbolo parametro = new Simbolo(token, TipoIdentificador.PARAMETRO, Semantico.nivel_atual, token.getNome(), 0, 0);
+        Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(parametro);
         if (simboloSearched != null) {
-            if (simboloSearched.getNivelDeclaracao() == Semantico.nivel_atual) {
-                throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Parâmetro %s declarado no mesmo nível, na linha %s", token.getNome(), token.getCurrentlineNumber())));
-            }
-            Semantico.tabelaSimbolos.insertValue(new Simbolo(token, TipoIdentificador.PARAMETRO, Semantico.nivel_atual, token.getNome(), 0, 0));
-            Semantico.parametros.push(simboloSearched.getQtValuesPilha());
-            ++Semantico.numeroParametros;
-            return;
+            throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Parâmetro %s já declarado, na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
-        Semantico.tabelaSimbolos.insertValue(new Simbolo(token, TipoIdentificador.PARAMETRO, Semantico.nivel_atual, token.getNome(), 0, 0));
-        Semantico.parametros.push((simboloSearched != null) ? simboloSearched.getQtValuesPilha() : -1);
+        Semantico.tabelaSimbolos.insertValue(parametro);
+        Semantico.parametros.add(parametro);
         ++Semantico.numeroParametros;
 	}
 
 	public static void reconhecidoNomeConstanteDeclaracao(Token token) throws Exception {
         Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, 0, token.getNome()));
         if (simboloSearched == null) {
-        	Simbolo simboloInsertAndSearch = new Simbolo(token, TipoIdentificador.CONSTANTE, Semantico.nivel_atual, token.getNome(), 0, 0);
-            Semantico.tabelaSimbolos.insertValue(simboloInsertAndSearch);
-            Semantico.endIdentificador = Semantico.tabelaSimbolos.getValue(simboloInsertAndSearch).getQtValuesPilha();
+        	Semantico.constanteTemp =  new Simbolo(token, TipoIdentificador.CONSTANTE, Semantico.nivel_atual, token.getNome(), 0, 0);
+            Semantico.tabelaSimbolos.insertValue(Semantico.constanteTemp);
+            Semantico.endIdentificador = Semantico.tabelaSimbolos.getValue(Semantico.constanteTemp).getQtValuesPilha();
             return;
         }
         throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Constante %s já está declarada, na linha %s", token.getNome(), token.getCurrentlineNumber())));
 	}
 
 	public static void reconhecidoValorConstanteDeclaracao(Token token) {
-		Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, 0, token.getNome()));
+		Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(Semantico.constanteTemp);
 		Semantico.tabelaSimbolos.deleteByValue(simboloSearched);
-		simboloSearched.setGeralA(Semantico.endIdentificador);
+		simboloSearched.setGeralA(Integer.parseInt(token.getNome()));
 		Semantico.tabelaSimbolos.insertValue(simboloSearched);
 	}
 
 	public static void beforeListaIdentificadoresDeclaracaoVariaveis() {
 		Semantico.tipo_identificador = TipoIdentificador.VARIAVEL;
-		Semantico.nivel_atual = 0;
+		Semantico.numeroVariaveis = 0;
 	}
 
 	public static void afterNomeProcedureDeclaracao(Token token) {
-		Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, 0, token.getNome()));
         Semantico.deslocamento_conforme_base = 3;
         Semantico.nomeProcedure = token.getNome();
         Semantico.lcProcedure = Semantico.areaInstrucoes.LC + 1;
         Semantico.tabelaSimbolos.insertValue(new Simbolo(token, TipoIdentificador.PROCEDURE, Semantico.nivel_atual, token.getNome(), Semantico.lcProcedure, 0));
         Semantico.temParametro = false;
-        Semantico.parametros.push((simboloSearched != null) ? simboloSearched.getQtValuesPilha() : -1);
         ++Semantico.nivel_atual;
         Semantico.numeroParametros = 0;
 	}
 
 	public static void afterDeclaracaoProcedure(Token token) {
         if (Semantico.numeroParametros > 0) {
-        	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, TipoIdentificador.PROCEDURE, Semantico.nivel_atual-1, Semantico.nomeProcedure, Semantico.lcProcedure, 0));
-        	simboloSearched.setNumeroParametro(Semantico.numeroParametros);
-            int i = 0;
-            while (i < Semantico.numeroParametros) {
-            	Simbolo simboloByQtParameter = Semantico.tabelaSimbolos.getByQtValueInsertedNumber(Semantico.parametros.pop());
-            	if(simboloByQtParameter != null) {
-            		simboloByQtParameter.setGeralA(-Semantico.numeroParametros - i);
-            	}
-                ++i;
+            List<Simbolo> listTemp = Semantico.parametros;
+            for (int i=0; i<Semantico.numeroParametros; i++) {
+            	listTemp.get(i).setGeralA(Semantico.numeroParametros-i);
             }
         }
         Semantico.instrucoesHipotetica.insert(19, 0, 0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
         Semantico.procedures.push(Semantico.areaInstrucoes.LC-1);
-        Semantico.parametros.push(Semantico.numeroParametros);
 	}
 
 	public static void fimProcedure() throws Exception {
-		Semantico.parametros.pop();
 		Instrucao instrucaoToAlterAfter = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], 1, 0, Semantico.numeroParametros+1);
 		Semantico.instrucoesHipotetica.insert(instrucaoToAlterAfter);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 1, 0, Semantico.numeroParametros+1);
@@ -172,7 +183,6 @@ public class SemanticActionsFunctions {
         Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], instrucaoToAlterAfter.instrucaoHip, instrucaoToAlterAfter.geralA, instrucaoToAlterAfter.geralB);
         Semantico.instrucoesHipotetica.alterInstrucao(instrucaoToAlterAfter, instrucaoNew);
         Hipotetica.AlterarAI(Semantico.areaInstrucoes, valueProcedure, 0, Semantico.areaInstrucoes.LC);
-        Semantico.tabelaSimbolos = new TableSymbols();
         --Semantico.nivel_atual;
 	}
 
@@ -190,7 +200,9 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void atribuicaoParteEsquerda(Token token) throws Exception {
-		Semantico.atribuicaoTemp = Semantico.tabelaSimbolos.getValue(new Simbolo(token, TipoIdentificador.VARIAVEL, 0, token.getNome()));
+		Simbolo search = new Simbolo(token, TipoIdentificador.VARIAVEL, 0, token.getNome());
+		search.setUseNivelSymbolCompare(true);
+		Semantico.atribuicaoTemp = Semantico.tabelaSimbolos.getValue(search);
         if (Semantico.atribuicaoTemp == null) {
             throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não encontrado na linha %s", token.getNome(), token.getCurrentlineNumber())));    	
         }
@@ -211,7 +223,9 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void chamadaProcedure(Token token) throws Exception {
-		Simbolo procedure = Semantico.tabelaSimbolos.getValue(new Simbolo(token, 0, Semantico.nomeProcedure));
+		Simbolo search = new Simbolo(token, TipoIdentificador.PROCEDURE, Semantico.nivel_atual, token.getNome(), Semantico.lcProcedure, 0);
+		search.setUseNivelSymbolCompare(true);
+		Simbolo procedure = Semantico.tabelaSimbolos.getValue(search);
         if (procedure != null && procedure.getCategoria().equals(TipoIdentificador.PROCEDURE)) {
             Semantico.nomeProcedure = token.getNome();
         }
@@ -297,12 +311,15 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void identificadorVariavel(Token token) throws Exception {
-    	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(new Simbolo(token, TipoIdentificador.VARIAVEL, Semantico.nivel_atual-1, token.getNome(), 0, 0));
-        if (simboloSearched == null) {
-            throw new Exception(ExceptionUtil.getSemanticGeneralError("Identificador não declarado"));
-        }
-        int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
         if (Semantico.nomeContexto.equals(Contexto.READLN)) {
+        	Simbolo search = new Simbolo(token, TipoIdentificador.VARIAVEL, Semantico.nivel_atual-1, token.getNome(), 0, 0);
+        	search.setIgnoreCategoriaEquals(true);
+        	search.setUseNivelSymbolCompare(true);
+        	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(search);
+            if (simboloSearched == null) {
+            	throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não declarado na linha %s", token.getNome(), token.getCurrentlineNumber())));
+            }
+            int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
             if (simboloSearched.getCategoria().equals(TipoIdentificador.VARIAVEL)) {
                 Semantico.instrucoesHipotetica.insert(21, 0, 0);
                 Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 21, 0, 0);
@@ -313,6 +330,14 @@ public class SemanticActionsFunctions {
             }
         }
         if (!Semantico.nomeContexto.equals(Contexto.EXPRESSAO)) return;
+        Simbolo search = new Simbolo(token, TipoIdentificador.CONSTANTE, Semantico.nivel_atual, token.getNome(), 0, 0);
+        search.setIgnoreCategoriaEquals(true);
+        search.setUseNivelSymbolCompare(true);
+    	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(search);
+        if (simboloSearched == null) {
+            throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não declarado na linha %s", token.getNome(), token.getCurrentlineNumber())));
+        }
+        int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
         if (simboloSearched.getCategoria().equals(TipoIdentificador.PROCEDURE) || simboloSearched.getCategoria().equals(TipoIdentificador.ROTULO)) {
         	throw new Exception(ExceptionUtil.getSemanticGeneralError("Identificador não é uma constante"));
         }

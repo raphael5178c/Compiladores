@@ -10,6 +10,8 @@ public class Simbolo {
 	private int geralB;
 	private int qtValuesInserted;
 	private int numeroParametro;
+	private boolean ignoreCategoriaEquals;
+	private boolean usaNivelCompare;
 	
 	public Simbolo(Token token, int nivel_declaracao, String nomeSimbolo) {
 		this.token = token;
@@ -107,14 +109,36 @@ public class Simbolo {
 	@Override
 	public boolean equals(Object obj) {
 		super.equals(obj);
+		boolean valid = false;
 		Simbolo simbolo = (Simbolo) obj;
-		return (this.token.equals(simbolo.token) &&
-				//this.geralA == simbolo.geralA &&
-				//this.geralB == simbolo.geralB &&
-				this.nivelDeclaracao == simbolo.nivelDeclaracao &&
-				this.nomeSimbolo.equals(simbolo.nomeSimbolo) &&
-				this.numeroParametro == simbolo.numeroParametro &&
-				this.categoria.equals(simbolo.categoria));
+			valid = this.token.equals(simbolo.token);
+			if(isUseNivelSymbolCompare()) {
+				valid = valid && this.nivelDeclaracao >= simbolo.nivelDeclaracao;
+			} else {
+				valid = valid && this.nivelDeclaracao == simbolo.nivelDeclaracao;
+			}
+			valid = valid && this.nomeSimbolo.equals(simbolo.nomeSimbolo);
+			valid = valid && this.numeroParametro == simbolo.numeroParametro;
+			if(!isIgnoreCategoriaEquals()) {
+				valid = valid && this.categoria.equals(simbolo.categoria);
+			}
+		return valid;
+	}
+
+	public boolean isIgnoreCategoriaEquals() {
+		return ignoreCategoriaEquals;
+	}
+
+	public void setIgnoreCategoriaEquals(boolean ignoreCategoriaEquals) {
+		this.ignoreCategoriaEquals = ignoreCategoriaEquals;
+	}
+
+	public void setUseNivelSymbolCompare(boolean usa) {
+		this.usaNivelCompare = true;
+	}
+	
+	public boolean isUseNivelSymbolCompare() {
+		return this.usaNivelCompare;
 	}
 	
 	
