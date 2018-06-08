@@ -11,7 +11,7 @@ public class ValueUtil {
 	
 	public static boolean isEmpty(Object obj) {
 		try {
-			if (obj.equals(null))
+			if (obj == null)
 				return true;
 			if ("".equalsIgnoreCase(obj + ""))
 				return true;
