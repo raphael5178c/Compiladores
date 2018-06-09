@@ -57,6 +57,8 @@ public class Semantico {
 	public static String nome_identificador;
 	
 	public static int numeroVariaveis;
+	public static Simbolo forEnd;
+	public static Instrucao forTemp;
 	
 	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token, Token beforePreviusToken) throws Exception {
 		switch (acaoSemantica) {
@@ -172,13 +174,13 @@ public class Semantico {
 				SemanticActionsFunctions.ramoCaseAfterInteiro();
 			break;
 			case SemanticActionsConstant.AFTER_VARIAVEL_CONTROLE_FOR:
-				SemanticActionsFunctions.afterVariavelControleFor();
+				SemanticActionsFunctions.afterVariavelControleFor(token);
 			break;
 			case SemanticActionsConstant.AFTER_EXPRESSAO_VALOR_INICIAL:
 				SemanticActionsFunctions.afterExpressaoValorInicial();
 			break;
 			case SemanticActionsConstant.AFTER_EXPRESSAO_VALOR_FINAL:
-				SemanticActionsFunctions.afterExpressaoValorFinal();
+				SemanticActionsFunctions.afterExpressaoValorFinal(token);
 			break;
 			case SemanticActionsConstant.AFTER_COMANDO_EM_FOR:
 				SemanticActionsFunctions.afterComandoEmFor();

@@ -20,21 +20,18 @@ import analisador.util.ValueUtil;
 public class SemanticActionsFunctions {
 
 	public static void reconheceNomePrograma() {
+
 		Semantico.instrucoesHipotetica = new InstrucoesHipotetica();
-		
 		Semantico.areaInstrucoes = new AreaInstrucoes();
 		Semantico.areaLiterais = new AreaLiterais();
-		
 		Semantico.nivel_atual = 0;
 		Semantico.deslocamento_conforme_base = 3;
 		Semantico.proxima_Instrucao = 1;
 		Semantico.ponteiro_area_literais = 1;
 		Semantico.acaoAcumulada = 3;
-		
 		Semantico.temParametro = false;
 		Semantico.numeroParametros = 0;
 		Semantico.numeroParametrosEfetivos = 0;
-		
 		Semantico.ifs = new Stack<Integer>();
 		Semantico.whiles = new Stack<Integer>();
 		Semantico.repeats = new Stack<Integer>();
@@ -43,30 +40,26 @@ public class SemanticActionsFunctions {
 		Semantico.cases = new Stack<Integer>();
 		Semantico.fors = new Stack<Integer>();
 		Semantico.tabelaSimbolos = new TableSymbols();
-		
 		Semantico.nomeProcedure = null;
 		Semantico.tipo_identificador = null;
 		Semantico.temParametro = false;
 		Semantico.numeroParametros = 0;
 		Semantico.numeroParametrosEfetivos = 0;
-		
 		Semantico.nomeContexto = null;
-		
 		Semantico.endIdentificador = 0;
 		Semantico.lcProcedure = 0;
-		
 		Semantico.instrucaoWhileTemp = null;
 		Semantico.instrucaoIfTemp = null;
 		Semantico.instrucaoElseTemp = null;
 		Semantico.atribuicaoTemp = null;
 		Semantico.constanteTemp = null;
-		
 		Semantico.nome_atribuicao_esquerda = null;
 		Semantico.nome_identificador = null;
-		
 		Semantico.numeroVariaveis = 0;
-		
 		Semantico.hipotetica = new Hipotetica();
+		Semantico.forEnd = null;
+		Semantico.forTemp = null;
+		
 		Hipotetica.InicializaAI(Semantico.areaInstrucoes);
 		Hipotetica.InicializaAL(Semantico.areaLiterais);
 	}
@@ -339,7 +332,7 @@ public class SemanticActionsFunctions {
         }
         int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
         if (simboloSearched.getCategoria().equals(TipoIdentificador.PROCEDURE) || simboloSearched.getCategoria().equals(TipoIdentificador.ROTULO)) {
-        	throw new Exception(ExceptionUtil.getSemanticGeneralError("Identificador não é uma constante"));
+        	throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não é uma constante na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
         if (simboloSearched.getCategoria().equals(TipoIdentificador.CONSTANTE)) {
             Semantico.instrucoesHipotetica.insert(3, 0, simboloSearched.getGeralA());
@@ -368,7 +361,11 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterComandoCase() {
-		// TODO Falta Implementar essa ação Semântica
+//        this.instrucoes.alteraInstrucao(this.cases.veTopo(), 0, this.AI.LC + 1);
+//        Hipotetica.AlterarAI(this.AI, this.cases.veTopo(), 0, this.AI.LC);
+//        this.cases.tiraElemento();
+//        this.instrucoes.insereInstrucao(24, 0, -1);
+//        this.maquinaHipotetica.IncluirAI(this.AI, 24, 0, -1);
 	}
 
 	public static void ramoCaseAfterInteiroUltimoLista() {
@@ -383,20 +380,53 @@ public class SemanticActionsFunctions {
 		// TODO Falta Implementar essa ação Semântica
 	}
 
-	public static void afterVariavelControleFor() {
-		// TODO Falta Implementar essa ação Semântica
+	public static void afterVariavelControleFor(Token token) throws Exception {
+        Simbolo search = new Simbolo(token, TipoIdentificador.VARIAVEL, Semantico.nivel_atual, token.getNome(), 0, 0);
+        search.setUseNivelSymbolCompare(true);
+        Semantico.forEnd = Semantico.tabelaSimbolos.getValue(search);
+    	if(Semantico.forEnd == null) {
+    		throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não declarado na linha %s, ou não é uma variável ", token.getNome(), token.getCurrentlineNumber())));
+    	}
 	}
-
+	
 	public static void afterExpressaoValorInicial() {
-		// TODO Falta Implementar essa ação Semântica
+        Semantico.instrucoesHipotetica.insert(4, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
 	}
 
-	public static void afterExpressaoValorFinal() {
-		// TODO Falta Implementar essa ação Semântica
+	public static void afterExpressaoValorFinal(Token token) {
+        Semantico.fors.push(Semantico.areaInstrucoes.LC);
+        Semantico.instrucoesHipotetica.insert(28, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 28, 0 ,0);
+        Semantico.instrucoesHipotetica.insert(2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());        
+        Semantico.instrucoesHipotetica.insert(18, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0 ,0);
+        Semantico.fors.push(Semantico.areaInstrucoes.LC);
+        Semantico.forTemp = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[20], 20, 0, 0);
+        Semantico.instrucoesHipotetica.insert(20, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0 ,0);
 	}
 
 	public static void afterComandoEmFor() {
-		// TODO Falta Implementar essa ação Semântica
+		int difNivel = Semantico.nivel_atual - Semantico.forEnd.getGeralA();
+		Semantico.instrucoesHipotetica.insert(2, difNivel, Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, difNivel, Semantico.forEnd.getGeralB());
+        Semantico.instrucoesHipotetica.insert(3, 0, 1);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, 1);
+        Semantico.instrucoesHipotetica.insert(5, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 5, 0, 0);
+        Semantico.instrucoesHipotetica.insert(4, difNivel, Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, difNivel, Semantico.forEnd.getGeralB());
+        int forPos = Semantico.fors.pop();
+        Instrucao forNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], 1, 0, Semantico.areaInstrucoes.LC+1);
+        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.forTemp, forNew);
+        Hipotetica.AlterarAI(Semantico.areaInstrucoes, forPos, 0, Semantico.areaInstrucoes.LC + 1);
+        int forAfterPos = Semantico.fors.pop();
+        Semantico.instrucoesHipotetica.insert(19, 0, forAfterPos + 1);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, forAfterPos);
+        Semantico.instrucoesHipotetica.insert(24, 0, -1);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 24, 0, -1);
 	}
 
 	public static void comparacao01() { // =
