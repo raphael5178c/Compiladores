@@ -141,7 +141,8 @@ public class SemanticActionsFunctions {
         Semantico.deslocamento_conforme_base = 3;
         Semantico.nomeProcedure = token.getNome();
         Semantico.lcProcedure = Semantico.areaInstrucoes.LC + 1;
-        Semantico.tabelaSimbolos.insertValue(new Simbolo(token, TipoIdentificador.PROCEDURE, Semantico.nivel_atual, token.getNome(), Semantico.lcProcedure, 0));
+        Semantico.procedureTemp = new Simbolo(token, TipoIdentificador.PROCEDURE, Semantico.nivel_atual, token.getNome(), Semantico.lcProcedure, 0);
+        Semantico.tabelaSimbolos.insertValue(Semantico.procedureTemp);
         Semantico.temParametro = false;
         ++Semantico.nivel_atual;
         Semantico.numeroParametros = 0;
@@ -151,8 +152,11 @@ public class SemanticActionsFunctions {
         if (Semantico.numeroParametros > 0) {
             List<Simbolo> listTemp = Semantico.parametros;
             for (int i=0; i<Semantico.numeroParametros; i++) {
-            	listTemp.get(i).setGeralA(Semantico.numeroParametros-i);
+        		listTemp.get(i).setGeralA((i==0) ? -Semantico.numeroParametros : -Semantico.numeroParametros-1);
             }
+            Semantico.tabelaSimbolos.deleteByValue(Semantico.procedureTemp);
+            Semantico.procedureTemp.setGeralB(Semantico.numeroParametros);
+            Semantico.tabelaSimbolos.insertValue(Semantico.procedureTemp);
         }
         Semantico.instrucoesHipotetica.insert(19, 0, 0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
@@ -173,13 +177,13 @@ public class SemanticActionsFunctions {
             ++i;
         }
         int valueProcedure = Semantico.procedures.pop();
-        Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], instrucaoToAlterAfter.instrucaoHip, instrucaoToAlterAfter.geralA, instrucaoToAlterAfter.geralB);
+        Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], instrucaoToAlterAfter.instrucaoHip, instrucaoToAlterAfter.geralA, Semantico.numeroParametros);
         Semantico.instrucoesHipotetica.alterInstrucao(instrucaoToAlterAfter, instrucaoNew);
         Hipotetica.AlterarAI(Semantico.areaInstrucoes, valueProcedure, 0, Semantico.areaInstrucoes.LC);
         --Semantico.nivel_atual;
 	}
 
-	public static void beforeParametrosFormaisProcedure() {
+	public static void beforeParametrosFormaisProcedure(Token token) {
         Semantico.tipo_identificador = TipoIdentificador.PARAMETRO;
         Semantico.temParametro = true;
 	}
@@ -307,7 +311,7 @@ public class SemanticActionsFunctions {
 
 	public static void identificadorVariavel(Token token) throws Exception {
         if (Semantico.nomeContexto.equals(Contexto.READLN)) {
-        	Simbolo search = new Simbolo(token, TipoIdentificador.VARIAVEL, Semantico.nivel_atual-1, token.getNome(), 0, 0);
+        	Simbolo search = new Simbolo(token, TipoIdentificador.VARIAVEL, (Semantico.nivel_atual-1 < 0) ? 0 : Semantico.nivel_atual-1, token.getNome(), 0, 0);
         	search.setIgnoreCategoriaEquals(true);
         	search.setUseNivelSymbolCompare(true);
         	Simbolo simboloSearched = Semantico.tabelaSimbolos.getValue(search);

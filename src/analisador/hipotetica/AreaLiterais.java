@@ -9,7 +9,7 @@ package analisador.hipotetica;
  */
 public class AreaLiterais {
 
-	public String AL[]= new String[30];
+	public String AL[]= new String[3000];
 	public int LIT;
 	
 }

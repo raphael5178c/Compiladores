@@ -13,8 +13,8 @@ import javax.swing.JOptionPane;
  * Fabio e adaptada para este aplicativo.
  */
 public class Hipotetica {
-	public static int MaxInst = 1000;
-	public static int MaxList = 30;
+	public static int MaxInst = 100000;
+	public static int MaxList = 3000;
 	public static int baseSegmento; // base do segmento
 	public static int topoPilhaBaseDados; // topo da pilha da base de dados
 	public static int apontarInstrucoes; // apontador de instruções
@@ -24,7 +24,7 @@ public class Hipotetica {
 	public static int numeroParametros; // número de parâmetros;
 	public static int codigoOperadorInstrucao; // codigo da instrução
 	public static int num_impr;
-	public static int[] S = new int[1000];
+	public static int[] S = new int[100000];
 
 	/**
 	 * Construtor sem parâmetros. Os atributos "nv", "np" e "num_impr" são

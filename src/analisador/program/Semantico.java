@@ -97,7 +97,7 @@ public class Semantico {
 				SemanticActionsFunctions.fimProcedure();
 			break;
 			case SemanticActionsConstant.BEFORE_PARAMETROS_FORMAIS_PROCEDURE:
-				SemanticActionsFunctions.beforeParametrosFormaisProcedure();
+				SemanticActionsFunctions.beforeParametrosFormaisProcedure(token);
 			break;
 			case SemanticActionsConstant.IDENTIFICADOR_INSTRUCAO_ROTULADA_OU_ATRIBUICAO:
 				SemanticActionsFunctions.identificadorInstrucaoRotuladaOrAtribuicao(token);
