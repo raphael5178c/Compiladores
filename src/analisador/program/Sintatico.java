@@ -74,14 +74,16 @@ public class Sintatico {
 	}
 
 	private int verificaTokenTerminal(List<Token> listToken, int currentIndex, int pilhaCodigo) throws Exception {
-		if(pilhaCodigo == tokenAtual.getCodigoParser() && !pilha.isEmpty()) {
+		if (pilhaCodigo == tokenAtual.getCodigoParser() && !pilha.isEmpty()) {
 			try {
 				try {
-					twoTokenBeforeAtual = listToken.get(currentIndex-2);
-				} catch (Exception e) { /* ignora exceção */ }
-				previousToken = tokenAtual;
+					twoTokenBeforeAtual = listToken.get(currentIndex - 2);
+				} catch (Exception e) {
+					/* ignora exceção */ }
+				previousToken = tokenAtual.clone2();
 				tokenAtual = listToken.get(currentIndex++);
-			} catch (Exception e) { /* ignora exceção */ }
+			} catch (Exception e) {
+				/* ignora exceção */ }
 		} else {
 			throw new Exception(ExceptionUtil.getSyntaticErrorException(tokenAtual));
 		}

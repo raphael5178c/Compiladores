@@ -267,6 +267,7 @@ public class Main extends JFrame{
 				}
 			}
 		} catch (Exception ex) {
+			ex.printStackTrace();
 			tableInstrucoes.setModel(new DefaultTableModel(null, colunasInstrucoes));
 			tableLiterais.setModel(new DefaultTableModel(null, colunasLiterais));
 			ConsoleUtil.getInstance().setTxtErrorConsole(ex);

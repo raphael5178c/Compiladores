@@ -221,12 +221,14 @@ public class SemanticActionsFunctions {
 		Simbolo procedure = Semantico.tabelaSimbolos.getValue(search);
         if (procedure != null && procedure.getCategoria().equals(TipoIdentificador.PROCEDURE)) {
             Semantico.nomeProcedure = token.getNome();
+            Semantico.procedureTemp = search;
+            return;
         }
         throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Procedure %s não foi declarada", Semantico.nomeProcedure)));
 	}
 
 	public static void afterCall(Token token) throws Exception {
-		Simbolo procedure = Semantico.tabelaSimbolos.getValue(new Simbolo(token, 0, Semantico.nomeProcedure));
+		Simbolo procedure = Semantico.tabelaSimbolos.getValue(Semantico.procedureTemp);
 		if (ValueUtil.isEmpty(procedure)) {
 			throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Procedure %s não foi declarada", Semantico.nomeProcedure)));
 		} else if(procedure.getGeralB() != Semantico.numeroParametros) {

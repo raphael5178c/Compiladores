@@ -1,6 +1,6 @@
 package analisador.domain;
 
-public class Token {
+public class Token implements Cloneable {
 
 	private int codigo;
 	private String nome;
@@ -98,6 +98,16 @@ public class Token {
 				this.codigoParser == token.codigoParser &&
 				this.nome.equals(token.nome) &&
 				this.tipo.equals(token.tipo));
+	}
+	
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		// TODO Auto-generated method stub
+		return super.clone();
+	}
+	
+	public Token clone2() throws CloneNotSupportedException {
+		return (Token) this.clone();
 	}
 
 }

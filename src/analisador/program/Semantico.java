@@ -57,6 +57,7 @@ public class Semantico {
 	public static String nome_identificador;
 	
 	public static int numeroVariaveis;
+	public static Simbolo procedureTemp;
 	public static Simbolo forEnd;
 	public static Instrucao forTemp;
 	
