@@ -8,7 +8,7 @@ import analisador.domain.Literal;
 
 public class InstrucoesHipotetica {
 	
-	public static String[] instrucaoHipotetica = new String[30];
+	public static String[] instrucaoHipotetica = new String[100];
 	public List<Instrucao> listIntrucao;
 	public List<Literal> listLiteral;
 	
@@ -42,6 +42,7 @@ public class InstrucoesHipotetica {
         InstrucoesHipotetica.instrucaoHipotetica[27] = "NADA";
         InstrucoesHipotetica.instrucaoHipotetica[28] = "COPI";
         InstrucoesHipotetica.instrucaoHipotetica[29] = "DSVT";
+        InstrucoesHipotetica.instrucaoHipotetica[99] = "##DEBUG##";
 	}
 	
 	public void insert(int numeroInstMaquinaVirutal, int geralA, int geralB) {

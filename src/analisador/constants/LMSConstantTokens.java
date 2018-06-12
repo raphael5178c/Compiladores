@@ -52,5 +52,7 @@ public abstract class LMSConstantTokens {
 	public static final int TOKEN_VAR = 43;
 	public static final int TOKEN_WHILE = 44;
 	public static final int TOKEN_WRITELN = 45;
+	
+	public static final int DEBUGGER_TOKEN = 999;
 
 }

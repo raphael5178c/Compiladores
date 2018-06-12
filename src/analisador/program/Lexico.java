@@ -57,6 +57,9 @@ public class Lexico {
 		if ((c == '\n') || (c == '\r')) {
 			return 0;
 		}
+		if((c+"").equals("#")) {
+			return 999;
+		}
 		return -1;
 	}
 
@@ -313,6 +316,17 @@ public class Lexico {
 						i--;
 					}
 					break;
+				case LMSConstantTokens.DEBUGGER_TOKEN:
+					boolean canExit = false;
+					if(isCharacterDebugger(sequenciaAtual.toString())) {
+						returnList.add(new Token(999, String.valueOf(999), "##DEBUG##", LMSConstantTokens.DEBUGGER_TOKEN, this.linha));
+						canExit = true;
+						i--;
+					}
+					if(canExit) {
+						estadoAtual = estado1(charAtual);
+					}
+					break;
 				}
 				if (estadoAtual >= 0) {
 					sequenciaAtual.append(charAtual);
@@ -325,6 +339,10 @@ public class Lexico {
 		} catch (Exception ex) {
 			throw ex;
 		}
+	}
+	
+	private boolean isCharacterDebugger(String palavra) {
+		return (palavra.equalsIgnoreCase("##DEBUG##"));
 	}
 
 	private int getCodigoParser(String key) {

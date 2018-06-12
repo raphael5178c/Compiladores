@@ -33,6 +33,7 @@ public class Sintatico {
 		}
 		beginVariables();
 		int currentIndex = 0;
+		boolean hasChangedToken = true;
 		while (pilha.size() > 0) {
 			tokenAtual = (tokenAtual == null) ? listToken.get(currentIndex++) : tokenAtual;
 			int pilhaCodigo = pilha.pop();
@@ -40,11 +41,15 @@ public class Sintatico {
 				continue;
 			}
 			if (isTerminalState(pilhaCodigo)) {
-				currentIndex = verificaTokenTerminal(listToken, currentIndex, pilhaCodigo);
+				currentIndex = verificaTokenTerminal(listToken, currentIndex, pilhaCodigo, hasChangedToken);
 			} else if (isNotTerminalState(pilhaCodigo)) {
 				verificaTokenNaoTerminal(pilhaCodigo);
 			} else if (isSemanticState(pilhaCodigo) && goSemantica) {
 				Semantico.gerenciaAcoesSemanticas(pilhaCodigo, previousToken, twoTokenBeforeAtual);
+			}
+			if(hasChangedToken && tokenAtual.getNome().equals("999")) {
+				Semantico.gerenciaAcoesSemanticas(999, previousToken, twoTokenBeforeAtual);
+				hasChangedToken = false;
 			}
 		}
 		if(goSemantica) {
@@ -63,6 +68,9 @@ public class Sintatico {
 	}
 
 	private void verificaTokenNaoTerminal(int pilhaCodigo) throws Exception {
+		if(tokenAtual.getNome().equals("999")) {
+			return;
+		}
 		int[] productionsList = findProduction(tokenAtual.getCodigoParser(), pilhaCodigo);
 		if(productionsList != null) {
 			for (int i = productionsList.length-1; i >= 0; i--) {
@@ -73,7 +81,7 @@ public class Sintatico {
 		}
 	}
 
-	private int verificaTokenTerminal(List<Token> listToken, int currentIndex, int pilhaCodigo) throws Exception {
+	private int verificaTokenTerminal(List<Token> listToken, int currentIndex, int pilhaCodigo, boolean hasChangedToken) throws Exception {
 		if (pilhaCodigo == tokenAtual.getCodigoParser() && !pilha.isEmpty()) {
 			try {
 				try {
@@ -82,8 +90,11 @@ public class Sintatico {
 					/* ignora exceção */ }
 				previousToken = tokenAtual.clone2();
 				tokenAtual = listToken.get(currentIndex++);
+				hasChangedToken = true;
 			} catch (Exception e) {
 				/* ignora exceção */ }
+		} else if(tokenAtual.getNome().equals("999")) {
+			return currentIndex;
 		} else {
 			throw new Exception(ExceptionUtil.getSyntaticErrorException(tokenAtual));
 		}

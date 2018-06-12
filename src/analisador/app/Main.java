@@ -232,8 +232,8 @@ public class Main extends JFrame{
 	}
 	
 	protected void analiseSintatica(boolean goSemantica) {
-		String [] colunasInstrucoes = {"Instrução", "Arg 1", "Arg 2"};
-		String [] colunasLiterais = {"End.", "Literal"};
+		String [] colunasInstrucoes = {"Cont", "Instrução", "Arg 1", "Arg 2"};
+		String [] colunasLiterais = {"Cont", "End.", "Literal"};
 		try {
 			analiseLexica();
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
@@ -241,12 +241,13 @@ public class Main extends JFrame{
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");
 			if(goSemantica && Semantico.instrucoesHipotetica != null) {
 				if(Semantico.instrucoesHipotetica.listIntrucao != null) {
-					String[][] dados = new String[Semantico.instrucoesHipotetica.listIntrucao.size()][3];
+					String[][] dados = new String[Semantico.instrucoesHipotetica.listIntrucao.size()][4];
 					for (int i = 0 ; i < Semantico.instrucoesHipotetica.listIntrucao.size(); i++) {
 						Instrucao instrucao = Semantico.instrucoesHipotetica.listIntrucao.get(i);
-						dados[i][0] = String.valueOf(instrucao.nmInstrucao);
-						dados[i][1] = String.valueOf(instrucao.geralA);
-						dados[i][2] = String.valueOf(instrucao.geralB);
+						dados[i][0] = String.valueOf(i+1);
+						dados[i][1] = String.valueOf(instrucao.nmInstrucao);
+						dados[i][2] = String.valueOf(instrucao.geralA);
+						dados[i][3] = String.valueOf(instrucao.geralB);
 					}
 					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -254,11 +255,12 @@ public class Main extends JFrame{
 					tableInstrucoes.setDefaultRenderer(String.class, centerRenderer);		
 				}
 				if(Semantico.instrucoesHipotetica.listLiteral != null) {
-					String[][] dados = new String[Semantico.instrucoesHipotetica.listLiteral.size()][2];
+					String[][] dados = new String[Semantico.instrucoesHipotetica.listLiteral.size()][3];
 					for (int i = 0 ; i < Semantico.instrucoesHipotetica.listLiteral.size(); i++) {
 						Literal literal = Semantico.instrucoesHipotetica.listLiteral.get(i);
-						dados[i][0] = String.valueOf(literal.endMemoria);
-						dados[i][1] = String.valueOf(literal.nmLiteral);
+						dados[i][0] = String.valueOf(i+1);
+						dados[i][1] = String.valueOf(literal.endMemoria);
+						dados[i][2] = String.valueOf(literal.nmLiteral);
 					}
 					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
