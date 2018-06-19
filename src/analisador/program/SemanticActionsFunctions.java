@@ -21,6 +21,7 @@ public class SemanticActionsFunctions {
 
 	public static void reconheceNomePrograma() {
 
+		Semantico.hipotetica = new Hipotetica();
 		Semantico.instrucoesHipotetica = new InstrucoesHipotetica();
 		Semantico.areaInstrucoes = new AreaInstrucoes();
 		Semantico.areaLiterais = new AreaLiterais();
@@ -56,7 +57,6 @@ public class SemanticActionsFunctions {
 		Semantico.nome_atribuicao_esquerda = null;
 		Semantico.nome_identificador = null;
 		Semantico.numeroVariaveis = 0;
-		Semantico.hipotetica = new Hipotetica();
 		Semantico.forEnd = null;
 		Semantico.forTemp = null;
 		

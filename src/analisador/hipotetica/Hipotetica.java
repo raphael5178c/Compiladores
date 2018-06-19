@@ -31,7 +31,8 @@ public class Hipotetica {
 	 * inicializados com valores padrões.
 	 */
 	public Hipotetica() {
-		numeroVariaveis = numeroParametros = num_impr = 0;
+		baseSegmento = numeroVariaveis = numeroParametros = num_impr = topoPilhaBaseDados = apontarInstrucoes = primeiroOperando = segundoOperando = codigoOperadorInstrucao = 0;
+		S = new int[100000];
 	}
 
 	/**
