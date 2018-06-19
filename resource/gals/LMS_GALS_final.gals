@@ -133,7 +133,7 @@ writeln = identificador : "writeln"
 <REPPAR> ::= "," <EXPRESSAO> <REPPAR> ;
 <COMANDO> ::= if <EXPRESSAO> then <COMANDO> <ELSEPARTE> ;
 <ELSEPARTE> ::= î ;
-<ELSEPARTE> ::= else <COMANDO> ;
+<ELSEPARTE> ::= ";" else <COMANDO> ;
 <COMANDO> ::= while <EXPRESSAO> do <COMANDO> ;
 <COMANDO> ::= repeat <COMANDO> until <EXPRESSAO> ;
 <COMANDO> ::= readln "(" <VARIAVEL> <REPVARIAVEL> ")" ;
@@ -176,4 +176,3 @@ writeln = identificador : "writeln"
 <FATOR> ::= "(" <EXPRESSAO> ")" ;
 <FATOR> ::= not <FATOR> ;
 <FATOR> ::= <VARIAVEL> ;
-

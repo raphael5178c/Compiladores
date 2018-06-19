@@ -1,0 +1,13 @@
+Program ifelse;
+	Var x: Integer;
+Begin
+	Readln(x);
+	if (x < 0 ) then
+	begin
+		writeln("Deu boa ");
+		x := 8*9+x;
+	end;
+	else
+		Writeln("Deu boa yesssss", x);
+	Writeln("WMW", x);
+End.
