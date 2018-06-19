@@ -59,5 +59,6 @@ public class SemanticActionsConstant {
 	public static final int EXPRESSAO_INT = 154;
 	public static final int EXPRESSAO_NOT = 155;
 	public static final int EXPRESSAO_VARIAVEL = 156;
+	public static final int DEBUG_TOKEN = 999;
 
 }

@@ -514,4 +514,8 @@ public class SemanticActionsFunctions {
 		Semantico.nomeContexto = Contexto.EXPRESSAO;
 	}
 
+	public static void gerenciaDebugToken(Token debuggerToken) {
+		Semantico.instrucoesHipotetica.insert(99, 0, 0);
+	}
+
 }

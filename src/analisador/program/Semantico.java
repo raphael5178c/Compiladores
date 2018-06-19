@@ -234,6 +234,9 @@ public class Semantico {
 			case SemanticActionsConstant.EXPRESSAO_VARIAVEL:
 				SemanticActionsFunctions.expressaoVariavel();
 			break;
+			case SemanticActionsConstant.DEBUG_TOKEN:
+				SemanticActionsFunctions.gerenciaDebugToken(token);
+			break;
 
 			default:
 				throw new Exception(ExceptionUtil.getSemanticErrorInvalidException(acaoSemantica, token));
