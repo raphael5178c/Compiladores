@@ -21,5 +21,10 @@ public class Instrucao {
 		this.geralA = geralA;
 		this.geralB = geralB;
 	}
+	
+	@Override
+	public String toString() {
+		return this.instrucaoHip + this.nmInstrucao + this.geralA + this.geralB;
+	}
 
 }

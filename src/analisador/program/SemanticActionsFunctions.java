@@ -257,19 +257,23 @@ public class SemanticActionsFunctions {
 		Semantico.ifs.add(Semantico.areaInstrucoes.LC - 1);
 	}
 
-	public static void afterInstrucaoIf() {
+	public static void afterInstrucaoIf() throws Exception {
 		int ifsTop = Semantico.ifs.pop();
-		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[ifsTop], ifsTop, 0, Semantico.areaInstrucoes.LC + 1);
-        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoIfTemp, instrucaoNew);
+		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[Semantico.instrucaoElseTemp.instrucaoHip], Semantico.instrucaoElseTemp.instrucaoHip, 0, Semantico.areaInstrucoes.LC + 1);
+        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoElseTemp, instrucaoNew);
         Hipotetica.AlterarAI(Semantico.areaInstrucoes, ifsTop, 0, Semantico.areaInstrucoes.LC);
+        Semantico.instrucaoElseTemp = null;
 	}
 
-	public static void afterDominionThenBeforeElse() {
+	public static void afterDominionThenBeforeElse() throws Exception {
 		int ifsTop = Semantico.ifs.pop();
-		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[ifsTop], ifsTop, 0, Semantico.areaInstrucoes.LC + 2);
+		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[Semantico.instrucaoIfTemp.instrucaoHip], Semantico.instrucaoIfTemp.instrucaoHip, 0, Semantico.areaInstrucoes.LC + 2);
         Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoIfTemp, instrucaoNew);
         Hipotetica.AlterarAI(Semantico.areaInstrucoes, ifsTop, 0, Semantico.areaInstrucoes.LC + 1);
-        Semantico.instrucoesHipotetica.insert(19, 0, 0);
+        Semantico.instrucaoIfTemp = null;
+        
+        Semantico.instrucaoElseTemp = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[19], 19, 0, 0);
+        Semantico.instrucoesHipotetica.insert(Semantico.instrucaoElseTemp);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
         Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
 	}
@@ -285,7 +289,7 @@ public class SemanticActionsFunctions {
 		Semantico.whiles.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
-	public static void afterWhile() {
+	public static void afterWhile() throws Exception {
 		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[20], 20, 0, Semantico.areaInstrucoes.LC + 2);
         Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoWhileTemp, instrucaoNew);
         Semantico.instrucaoWhileTemp = null;
@@ -414,7 +418,7 @@ public class SemanticActionsFunctions {
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0 ,0);
 	}
 
-	public static void afterComandoEmFor() {
+	public static void afterComandoEmFor() throws Exception {
 		int difNivel = Semantico.nivel_atual - Semantico.forEnd.getGeralA();
 		Semantico.instrucoesHipotetica.insert(2, difNivel, Semantico.forEnd.getGeralB());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, difNivel, Semantico.forEnd.getGeralB());

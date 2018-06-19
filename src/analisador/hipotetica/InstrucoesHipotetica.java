@@ -66,11 +66,22 @@ public class InstrucoesHipotetica {
 		listLiteral.add(new Literal(nmLiteral, endMemoria));
 	}
 	
-	public void alterInstrucao(Instrucao instrucaoOld, Instrucao instrucaoNew) {
+	public void alterInstrucao(Instrucao instrucaoOld, Instrucao instrucaoNew) throws Exception {
+		int index = 0;
+		int indexOfRemove = 0;
+		Instrucao instrucaoSearched = null;
 		for (Instrucao instrucao : this.listIntrucao) {
-			if(instrucao.equals(instrucaoOld)) {
-				instrucao = instrucaoNew;
+			if(instrucao.equals(instrucaoOld) && instrucaoNew.instrucaoHip == instrucao.instrucaoHip) {
+				instrucaoSearched = instrucaoNew;
+				indexOfRemove = index;
 			}
+			index++;
+		}
+		if(instrucaoSearched == null) {
+			throw new Exception(String.format("Instrução Atual %s não foi alterada para nova instrução %s", instrucaoOld, instrucaoNew));
+		} else {
+			this.listIntrucao.remove(indexOfRemove);
+			this.listIntrucao.add(indexOfRemove, instrucaoSearched);
 		}
 	}
 
