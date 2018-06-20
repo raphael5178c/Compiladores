@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Stack;
 
 import analisador.domain.Contexto;
-import analisador.domain.Instrucao;
 import analisador.domain.Simbolo;
 import analisador.domain.TipoIdentificador;
 import analisador.domain.Token;
@@ -33,13 +32,15 @@ public class SemanticActionsFunctions {
 		Semantico.temParametro = false;
 		Semantico.numeroParametros = 0;
 		Semantico.numeroParametrosEfetivos = 0;
+		Semantico.parametros = new ArrayList<Simbolo>();
+		
 		Semantico.ifs = new Stack<Integer>();
 		Semantico.whiles = new Stack<Integer>();
 		Semantico.repeats = new Stack<Integer>();
 		Semantico.procedures = new Stack<Integer>();
-		Semantico.parametros = new ArrayList<Simbolo>();
 		Semantico.cases = new Stack<Integer>();
 		Semantico.fors = new Stack<Integer>();
+
 		Semantico.tabelaSimbolos = new TableSymbols();
 		Semantico.nomeProcedure = null;
 		Semantico.tipo_identificador = null;
@@ -49,25 +50,22 @@ public class SemanticActionsFunctions {
 		Semantico.nomeContexto = null;
 		Semantico.endIdentificador = 0;
 		Semantico.lcProcedure = 0;
-		Semantico.instrucaoWhileTemp = null;
-		Semantico.instrucaoIfTemp = null;
-		Semantico.instrucaoElseTemp = null;
-		Semantico.atribuicaoTemp = null;
-		Semantico.constanteTemp = null;
 		Semantico.nome_atribuicao_esquerda = null;
 		Semantico.nome_identificador = null;
 		Semantico.numeroVariaveis = 0;
 		Semantico.forEnd = null;
-		Semantico.forTemp = null;
 		
-		Hipotetica.InicializaAI(Semantico.areaInstrucoes);
-		Hipotetica.InicializaAL(Semantico.areaLiterais);
+		Semantico.atribuicaoTemp = null;
+		Semantico.constanteTemp = null;
+		Semantico.procedureTemp = null;
+		Semantico.forEnd = null;
+		
+		Semantico.hipotetica.InicializaAI(Semantico.areaInstrucoes);
+		Semantico.hipotetica.InicializaAL(Semantico.areaLiterais);
 	}
 
 	public static void reconheceFinalPrograma(Token token) throws Exception {
-		Semantico.instrucoesHipotetica.insert(26, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 26, 0, 0);
-		
 		Simbolo simboloRotulo = new Simbolo(token, 0, TipoIdentificador.ROTULO);
 		Simbolo rotuloEncontrado = Semantico.tabelaSimbolos.getValue(simboloRotulo);
 		if(rotuloEncontrado != null) {
@@ -76,7 +74,6 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterDeclareVariable() {
-		Semantico.instrucoesHipotetica.insert(24, 0, Semantico.acaoAcumulada);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 24, 0, Semantico.acaoAcumulada);
 		Semantico.acaoAcumulada = 3;
 	}
@@ -146,26 +143,24 @@ public class SemanticActionsFunctions {
         Semantico.temParametro = false;
         ++Semantico.nivel_atual;
         Semantico.numeroParametros = 0;
+        Semantico.parametros = new ArrayList<Simbolo>();
 	}
 
 	public static void afterDeclaracaoProcedure(Token token) {
         if (Semantico.numeroParametros > 0) {
             List<Simbolo> listTemp = Semantico.parametros;
             for (int i=0; i<Semantico.numeroParametros; i++) {
-        		listTemp.get(i).setGeralA((i==0) ? -Semantico.numeroParametros : -Semantico.numeroParametros-1);
+            	listTemp.get(i).setGeralA((i==0) ? -Semantico.numeroParametros : -Semantico.numeroParametros-1);
             }
             Semantico.tabelaSimbolos.deleteByValue(Semantico.procedureTemp);
             Semantico.procedureTemp.setGeralB(Semantico.numeroParametros);
             Semantico.tabelaSimbolos.insertValue(Semantico.procedureTemp);
         }
-        Semantico.instrucoesHipotetica.insert(19, 0, 0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
         Semantico.procedures.push(Semantico.areaInstrucoes.LC-1);
 	}
 
 	public static void fimProcedure() throws Exception {
-		Instrucao instrucaoToAlterAfter = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], 1, 0, Semantico.numeroParametros+1);
-		Semantico.instrucoesHipotetica.insert(instrucaoToAlterAfter);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 1, 0, Semantico.numeroParametros+1);
         int i = 0;
         while (i < Semantico.tabelaSimbolos.size()) {
@@ -177,9 +172,7 @@ public class SemanticActionsFunctions {
             ++i;
         }
         int valueProcedure = Semantico.procedures.pop();
-        Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], instrucaoToAlterAfter.instrucaoHip, instrucaoToAlterAfter.geralA, Semantico.numeroParametros);
-        Semantico.instrucoesHipotetica.alterInstrucao(instrucaoToAlterAfter, instrucaoNew);
-        Hipotetica.AlterarAI(Semantico.areaInstrucoes, valueProcedure, 0, Semantico.areaInstrucoes.LC);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, valueProcedure, 0, Semantico.areaInstrucoes.LC);
         --Semantico.nivel_atual;
 	}
 
@@ -214,7 +207,6 @@ public class SemanticActionsFunctions {
             throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Erro na atribuição da variavel %s na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
         int d_nivel = Semantico.nivel_atual - Semantico.atribuicaoTemp.getNivelDeclaracao();
-        Semantico.instrucoesHipotetica.insert(4, d_nivel, Semantico.atribuicaoTemp.getGeralA());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, d_nivel, Semantico.atribuicaoTemp.getGeralA());
         Semantico.atribuicaoTemp = null;
 	}
@@ -228,7 +220,7 @@ public class SemanticActionsFunctions {
             Semantico.procedureTemp = search;
             return;
         }
-        throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Procedure %s não foi declarada", Semantico.nomeProcedure)));
+        throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Procedure %s não foi declarada", token.getNome())));
 	}
 
 	public static void afterCall(Token token) throws Exception {
@@ -238,7 +230,6 @@ public class SemanticActionsFunctions {
 		} else if(procedure.getGeralB() != Semantico.numeroParametros) {
 			throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Número de parametros da procedure %s não conferem com o número de parâmetros recebidos", Semantico.nomeProcedure)));
 		}
-		Semantico.instrucoesHipotetica.insert(25, 0, procedure.getGeralA() + 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 25, 0, procedure.getGeralA());
 	}
 
@@ -250,52 +241,33 @@ public class SemanticActionsFunctions {
 		return;
 	}
 
-	public static void afterExpressaoNoIf() {
-		Semantico.instrucaoIfTemp = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[20], 20, 0, 0);
-		Semantico.instrucoesHipotetica.insert(Semantico.instrucaoIfTemp);
+	public static void afterExpressaoNoIf() throws Exception {
+		Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, 0);
-		Semantico.ifs.add(Semantico.areaInstrucoes.LC - 1);
 	}
 
 	public static void afterInstrucaoIf() throws Exception {
-		int ifsTop = Semantico.ifs.pop();
-		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[Semantico.instrucaoElseTemp.instrucaoHip], Semantico.instrucaoElseTemp.instrucaoHip, 0, Semantico.areaInstrucoes.LC + 1);
-        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoElseTemp, instrucaoNew);
-        Hipotetica.AlterarAI(Semantico.areaInstrucoes, ifsTop, 0, Semantico.areaInstrucoes.LC);
-        Semantico.instrucaoElseTemp = null;
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop(), 0, Semantico.areaInstrucoes.LC);
 	}
 
 	public static void afterDominionThenBeforeElse() throws Exception {
-		int ifsTop = Semantico.ifs.pop();
-		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[Semantico.instrucaoIfTemp.instrucaoHip], Semantico.instrucaoIfTemp.instrucaoHip, 0, Semantico.areaInstrucoes.LC + 2);
-        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoIfTemp, instrucaoNew);
-        Hipotetica.AlterarAI(Semantico.areaInstrucoes, ifsTop, 0, Semantico.areaInstrucoes.LC + 1);
-        Semantico.instrucaoIfTemp = null;
-        
-        Semantico.instrucaoElseTemp = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[19], 19, 0, 0);
-        Semantico.instrucoesHipotetica.insert(Semantico.instrucaoElseTemp);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop(), 0, Semantico.areaInstrucoes.LC + 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
-        Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
+		Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
-	public static void comandoWhileBeforeExpressao() {
+	public static void comandoWhileBeforeExpressao() throws Exception {
 		Semantico.whiles.push(Semantico.areaInstrucoes.LC);
 	}
 
-	public static void comandoWhileAfterExpressao() {
-		Semantico.instrucaoWhileTemp = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[20], 20, 0, 0);
-		Semantico.instrucoesHipotetica.insert(Semantico.instrucaoWhileTemp);
+	public static void comandoWhileAfterExpressao() throws Exception {
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, 0);
 		Semantico.whiles.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
 	public static void afterWhile() throws Exception {
-		Instrucao instrucaoNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[20], 20, 0, Semantico.areaInstrucoes.LC + 2);
-        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.instrucaoWhileTemp, instrucaoNew);
-        Semantico.instrucaoWhileTemp = null;
-        Hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.whiles.pop(), 0, Semantico.areaInstrucoes.LC + 1);
-        int posWhileInst = Semantico.whiles.pop();
-        Semantico.instrucoesHipotetica.insert(19, 0, posWhileInst);
+		int posWhileInst = Semantico.whiles.pop();
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, posWhileInst, 0, Semantico.areaInstrucoes.LC + 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, posWhileInst);
 	}
 
@@ -304,9 +276,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void repeatFim() {
-		int repeatsTop = Semantico.repeats.pop();
-		Semantico.instrucoesHipotetica.insert(20, 0, repeatsTop + 1);
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, repeatsTop);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, Semantico.repeats.pop());
 	}
 
 	public static void readlnInicio() {
@@ -324,9 +294,7 @@ public class SemanticActionsFunctions {
             }
             int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
             if (simboloSearched.getCategoria().equals(TipoIdentificador.VARIAVEL)) {
-                Semantico.instrucoesHipotetica.insert(21, 0, 0);
                 Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 21, 0, 0);
-                Semantico.instrucoesHipotetica.insert(4, d_nivel, simboloSearched.getGeralA());
                 Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, d_nivel, simboloSearched.getGeralA());
             } else {
                 throw new Exception(ExceptionUtil.getSemanticGeneralError("Identificador não é uma variável"));
@@ -345,24 +313,20 @@ public class SemanticActionsFunctions {
         	throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não é uma constante na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
         if (simboloSearched.getCategoria().equals(TipoIdentificador.CONSTANTE)) {
-            Semantico.instrucoesHipotetica.insert(3, 0, simboloSearched.getGeralA());
             Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, simboloSearched.getGeralA());
             return;
         }
-        Semantico.instrucoesHipotetica.insert(2, d_nivel, simboloSearched.getGeralA());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, d_nivel, simboloSearched.getGeralA());
 	}
 
 	public static void afterLiteralNaInstrucaoWriteln(Token tokenLiteral) {
-		Hipotetica.IncluirAL(Semantico.areaLiterais, tokenLiteral.getNome());
+		Semantico.hipotetica.IncluirAL(Semantico.areaLiterais, tokenLiteral.getNome());
 		Semantico.ponteiro_area_literais++;
-		Semantico.instrucoesHipotetica.insert(23, 0, Semantico.areaLiterais.LIT - 1);
 		Semantico.instrucoesHipotetica.insertLiteral(tokenLiteral.getNome(), Semantico.areaLiterais.LIT - 1);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 23, 0, Semantico.areaLiterais.LIT - 1);
 	}
 
 	public static void writelnAfterExpressao() {
-		Semantico.instrucoesHipotetica.insert(22, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 22, 0, 0);
 	}
 
@@ -372,7 +336,7 @@ public class SemanticActionsFunctions {
 
 	public static void afterComandoCase() {
 //        this.instrucoes.alteraInstrucao(this.cases.veTopo(), 0, this.AI.LC + 1);
-//        Hipotetica.AlterarAI(this.AI, this.cases.veTopo(), 0, this.AI.LC);
+//        Semantico.hipotetica.AlterarAI(this.AI, this.cases.veTopo(), 0, this.AI.LC);
 //        this.cases.tiraElemento();
 //        this.instrucoes.insereInstrucao(24, 0, -1);
 //        this.maquinaHipotetica.IncluirAI(this.AI, 24, 0, -1);
@@ -400,42 +364,27 @@ public class SemanticActionsFunctions {
 	}
 	
 	public static void afterExpressaoValorInicial() {
-        Semantico.instrucoesHipotetica.insert(4, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
 	}
 
-	public static void afterExpressaoValorFinal(Token token) {
+	public static void afterExpressaoValorFinal(Token token) throws Exception {
         Semantico.fors.push(Semantico.areaInstrucoes.LC);
-        Semantico.instrucoesHipotetica.insert(28, 0, 0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 28, 0 ,0);
-        Semantico.instrucoesHipotetica.insert(2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());        
-        Semantico.instrucoesHipotetica.insert(18, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0 ,0);
-        Semantico.fors.push(Semantico.areaInstrucoes.LC);
-        Semantico.forTemp = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[20], 20, 0, 0);
-        Semantico.instrucoesHipotetica.insert(20, 0, 0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0 ,0);
 	}
 
 	public static void afterComandoEmFor() throws Exception {
 		int difNivel = Semantico.nivel_atual - Semantico.forEnd.getGeralA();
-		Semantico.instrucoesHipotetica.insert(2, difNivel, Semantico.forEnd.getGeralB());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, difNivel, Semantico.forEnd.getGeralB());
-        Semantico.instrucoesHipotetica.insert(3, 0, 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, 1);
-        Semantico.instrucoesHipotetica.insert(5, 0, 0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 5, 0, 0);
-        Semantico.instrucoesHipotetica.insert(4, difNivel, Semantico.forEnd.getGeralB());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, difNivel, Semantico.forEnd.getGeralB());
         int forPos = Semantico.fors.pop();
-        Instrucao forNew = new Instrucao(InstrucoesHipotetica.instrucaoHipotetica[1], 1, 0, Semantico.areaInstrucoes.LC+1);
-        Semantico.instrucoesHipotetica.alterInstrucao(Semantico.forTemp, forNew);
-        Hipotetica.AlterarAI(Semantico.areaInstrucoes, forPos, 0, Semantico.areaInstrucoes.LC + 1);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, forPos, 0, Semantico.areaInstrucoes.LC + 1);
         int forAfterPos = Semantico.fors.pop();
-        Semantico.instrucoesHipotetica.insert(19, 0, forAfterPos + 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, forAfterPos);
-        Semantico.instrucoesHipotetica.insert(24, 0, -1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 24, 0, -1);
 	}
 
@@ -444,82 +393,64 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void comparacao02() { // <
-		Semantico.instrucoesHipotetica.insert(13, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 13, 0, 0);
 	}
 
 	public static void comparacao03() { // >
-		Semantico.instrucoesHipotetica.insert(14, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 14, 0, 0);
 	}
 
 	public static void comparacao04() { // >=
-		Semantico.instrucoesHipotetica.insert(18, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0, 0);
 	}
 
 	public static void comparacao05() { // <=
-		Semantico.instrucoesHipotetica.insert(17, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 17, 0, 0);
 	}
 
 	public static void comparacao06() { // <>
-		Semantico.instrucoesHipotetica.insert(16, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 16, 0, 0);
 	}
 
 	public static void expressaoOperandoSinalUnario() {
-		Semantico.instrucoesHipotetica.insert(9, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 9, 0, 0);
 	}
 
 	public static void expressaoSoma() {
-		Semantico.instrucoesHipotetica.insert(5, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 5, 0, 0);
 	}
 
 	public static void expressaoSubtracao() {
-		Semantico.instrucoesHipotetica.insert(6, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 6, 0, 0);
 	}
 
 	public static void expressaoOr() {
-		Semantico.instrucoesHipotetica.insert(12, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 12, 0, 0);
 	}
 
 	public static void expressaoMultiplica() {
-		Semantico.instrucoesHipotetica.insert(7, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 7, 0, 0);
 	}
 
 	public static void expressaoDivisao() {
-		Semantico.instrucoesHipotetica.insert(8, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 8, 0, 0);
 	}
 
 	public static void expressaoAnd() {
-		Semantico.instrucoesHipotetica.insert(11, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 11, 0, 0);
 	}
 
 	public static void expressaoInt(Token token) {
         int pen = Integer.parseInt(token.getNome());
-        Semantico.instrucoesHipotetica.insert(3, 0, pen);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, pen);
 	}
 
 	public static void expressaoNot() {
-		Semantico.instrucoesHipotetica.insert(10, 0, 0);
 		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 10, 0, 0);
 	}
 
 	public static void expressaoVariavel() {
 		Semantico.nomeContexto = Contexto.EXPRESSAO;
-	}
-
-	public static void gerenciaDebugToken(Token debuggerToken) {
-		Semantico.instrucoesHipotetica.insert(99, 0, 0);
 	}
 
 }

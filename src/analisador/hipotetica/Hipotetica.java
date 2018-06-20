@@ -38,7 +38,7 @@ public class Hipotetica {
 	/**
 	 * Inicializa a área de instruções.
 	 */
-	public static void InicializaAI(AreaInstrucoes AI) {
+	public void InicializaAI(AreaInstrucoes AI) {
 		for (int i = 0; i < MaxInst; i++) { // começava de 1
 			AI.AI[i].codigo = -1;
 			AI.AI[i].op1 = -1;
@@ -50,7 +50,7 @@ public class Hipotetica {
 	/**
 	 * Inicializa a área de literais
 	 */
-	public static void InicializaAL(AreaLiterais AL) {
+	public void InicializaAL(AreaLiterais AL) {
 		for (int i = 0; i < MaxList; i++) {
 			AL.AL[i] = "";
 			AL.LIT = 0;
@@ -84,19 +84,23 @@ public class Hipotetica {
 	/**
 	 * Altera uma instrução da área de instruções utilizada pela máquina hipotética.
 	 */
-	public static void AlterarAI(AreaInstrucoes AI, int s, int o1, int o2) {
+	public boolean AlterarAI(AreaInstrucoes AI, int s, int o1, int o2) {
+		boolean altered = false;
 		if (o1 != -1) {
 			AI.AI[s].op1 = o1;
+			altered = true;
 		}
 		if (o2 != -1) {
 			AI.AI[s].op2 = o2;
+			altered = true;
 		}
+		return altered;
 	}
 
 	/**
 	 * Inclui um literal na área de literais utilizada pela máquina hipotética.
 	 */
-	public static boolean IncluirAL(AreaLiterais AL, String literal) {
+	public boolean IncluirAL(AreaLiterais AL, String literal) {
 		boolean aux;
 		if (AL.LIT >= MaxList) {
 			aux = false;
@@ -111,7 +115,7 @@ public class Hipotetica {
 	/**
 	 * Utilizada para determinar a base.
 	 */
-	public static int Base() {// determina base
+	public int Base() {// determina base
 		int b1;
 		b1 = baseSegmento;
 		while (primeiroOperando > 0) {
@@ -123,8 +127,9 @@ public class Hipotetica {
 
 	/**
 	 * Responsável por interpretar as instruções.
+	 * @throws Exception 
 	 */
-	public static void Interpreta(AreaInstrucoes AI, AreaLiterais AL) {
+	public void Interpreta(AreaInstrucoes AI, AreaLiterais AL) throws Exception {
 		topoPilhaBaseDados = 0;
 		baseSegmento = 0; // registrador base
 		apontarInstrucoes = 0; // aponta proxima instrução
@@ -171,9 +176,12 @@ public class Hipotetica {
 				break;
 			case 8: // DIVI
 				if (S[topoPilhaBaseDados] == 0) {
-					JOptionPane.showMessageDialog(null, "Divisão por zero.", "Erro durante a execução", JOptionPane.ERROR_MESSAGE);
-					S[topoPilhaBaseDados - 1] = S[topoPilhaBaseDados - 1] / S[topoPilhaBaseDados];
-					topoPilhaBaseDados = topoPilhaBaseDados - 1;
+					try {
+						S[topoPilhaBaseDados - 1] = S[topoPilhaBaseDados - 1] / S[topoPilhaBaseDados];
+						topoPilhaBaseDados = topoPilhaBaseDados - 1;
+					} catch (ArithmeticException airthEx) {
+						throw new Exception("Impossivel dividir por zero.");
+					}
 				}
 				break;
 			case 9:// INVR
@@ -260,6 +268,9 @@ public class Hipotetica {
 				topoPilhaBaseDados = topoPilhaBaseDados + 1;
 				leitura = JOptionPane.showInputDialog(null, "Informe o valor:", "Leitura", JOptionPane.QUESTION_MESSAGE);
 				// System.out.print("Leia: "); A
+				if(leitura.isEmpty()) {
+					throw new Exception("Leitura de variável vazia");
+				}
 				(S[topoPilhaBaseDados]) = Integer.parseInt(leitura); // problema aqui A
 				break;
 			case 22:// IMPR
@@ -269,7 +280,7 @@ public class Hipotetica {
 				break;
 			case 23:// IMPRLIT
 				if (segundoOperando >= AL.LIT) {
-					JOptionPane.showMessageDialog(null, "Literal não encontrado na área dos literais.", "Erro durante a execução", JOptionPane.ERROR_MESSAGE);
+					throw new Exception("Literal não encontrado na área dos literais.");
 					// System.out.println("ERRO >> Literal nao encontrada na area"); A
 				} else {
 					JOptionPane.showMessageDialog(null, "" + AL.AL[segundoOperando], "Informação", JOptionPane.INFORMATION_MESSAGE);

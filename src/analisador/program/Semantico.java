@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Stack;
 
 import analisador.constants.SemanticActionsConstant;
-import analisador.domain.Instrucao;
 import analisador.domain.Simbolo;
 import analisador.domain.Token;
 import analisador.hipotetica.AreaInstrucoes;
@@ -27,13 +26,15 @@ public class Semantico {
 	public static AreaLiterais areaLiterais;
 	
 	public static InstrucoesHipotetica instrucoesHipotetica;
+	
 	public static Stack<Integer> ifs;
 	public static Stack<Integer> whiles;
 	public static Stack<Integer> repeats;
 	public static Stack<Integer> procedures;
-	public static List<Simbolo> parametros;
 	public static Stack<Integer> cases;
 	public static Stack<Integer> fors;
+	
+	public static List<Simbolo> parametros;
 	public static TableSymbols tabelaSimbolos;
 	
 	public static String nomeProcedure;
@@ -47,19 +48,15 @@ public class Semantico {
 	public static int endIdentificador;
 	public static int lcProcedure;
 	
-	public static Instrucao instrucaoWhileTemp;
-	public static Instrucao instrucaoIfTemp;
-	public static Instrucao instrucaoElseTemp;
 	public static Simbolo atribuicaoTemp;
 	public static Simbolo constanteTemp;
+	public static Simbolo procedureTemp;
+	public static Simbolo forEnd;
 	
 	public static String nome_atribuicao_esquerda;
 	public static String nome_identificador;
 	
 	public static int numeroVariaveis;
-	public static Simbolo procedureTemp;
-	public static Simbolo forEnd;
-	public static Instrucao forTemp;
 	
 	public static void gerenciaAcoesSemanticas(int acaoSemantica, Token token, Token beforePreviusToken) throws Exception {
 		switch (acaoSemantica) {
@@ -233,9 +230,6 @@ public class Semantico {
 			break;
 			case SemanticActionsConstant.EXPRESSAO_VARIAVEL:
 				SemanticActionsFunctions.expressaoVariavel();
-			break;
-			case SemanticActionsConstant.DEBUG_TOKEN:
-				SemanticActionsFunctions.gerenciaDebugToken(token);
 			break;
 
 			default:

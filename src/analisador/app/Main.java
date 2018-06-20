@@ -22,6 +22,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.LayoutStyle.ComponentPlacement;
@@ -29,15 +30,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import analisador.constants.LMSConstantTokens;
-import analisador.domain.Instrucao;
 import analisador.domain.Literal;
 import analisador.domain.PalavraReservada;
 import analisador.domain.Token;
+import analisador.hipotetica.InstrucoesHipotetica;
+import analisador.hipotetica.Tipos;
 import analisador.program.Lexico;
 import analisador.program.Semantico;
 import analisador.program.Sintatico;
 import analisador.util.ConsoleUtil;
-import javax.swing.JTabbedPane;
 
 public class Main extends JFrame{
 	
@@ -240,14 +241,15 @@ public class Main extends JFrame{
 			Sintatico.getInstance().analiseSintatica(tokenList, goSemantica);
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");
 			if(goSemantica && Semantico.instrucoesHipotetica != null) {
-				if(Semantico.instrucoesHipotetica.listIntrucao != null) {
-					String[][] dados = new String[Semantico.instrucoesHipotetica.listIntrucao.size()][4];
-					for (int i = 0 ; i < Semantico.instrucoesHipotetica.listIntrucao.size(); i++) {
-						Instrucao instrucao = Semantico.instrucoesHipotetica.listIntrucao.get(i);
+				if(Semantico.instrucoesHipotetica.isValidInstrucoes()) {
+					int qtValid = Semantico.instrucoesHipotetica.qtValidInstrucoes();
+					String[][] dados = new String[qtValid][4];
+					for (int i = 0 ; i < qtValid; i++) {
+						Tipos tipo = Semantico.areaInstrucoes.AI[i];
 						dados[i][0] = String.valueOf(i+1);
-						dados[i][1] = String.valueOf(instrucao.nmInstrucao);
-						dados[i][2] = String.valueOf(instrucao.geralA);
-						dados[i][3] = String.valueOf(instrucao.geralB);
+						dados[i][1] = String.valueOf(InstrucoesHipotetica.instrucaoHipotetica[tipo.codigo]);
+						dados[i][2] = String.valueOf(tipo.op1);
+						dados[i][3] = String.valueOf(tipo.op2);
 					}
 					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
