@@ -9,7 +9,7 @@ package analisador.hipotetica;
  */
 public class AreaInstrucoes {
 
-	public Tipos AI[]= new Tipos[100000];
+	public Tipos AI[]= new Tipos[1000];
 	public int LC;
 	
     /**
@@ -17,7 +17,7 @@ public class AreaInstrucoes {
    * Todos os atributos são inicializados com valores padrões.
    */
 	public AreaInstrucoes(){
-		for(int i=0; i<100000; i++){
+		for(int i=0; i<1000; i++){
 			AI[i]=new Tipos();
 		}
 	}

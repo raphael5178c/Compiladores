@@ -6,6 +6,7 @@ import javax.swing.JOptionPane;
 //Equipe:Maicon, reinaldo e Fabio - 2003A
 //Adaptado e corrigido por Rogério Cortina e Charbel Szymanski - 2003B
 //Atualizada por Charbel Szymanski em 2016A
+//Corrigido Bugs por Raphael Santos e Guilherme Juncklaus
 
 /**
  * Classe que implementa a máquina hipotética. Esta classe, bem como as classes
@@ -13,8 +14,8 @@ import javax.swing.JOptionPane;
  * Fabio e adaptada para este aplicativo.
  */
 public class Hipotetica {
-	public static int MaxInst = 100000;
-	public static int MaxList = 3000;
+	public static int MaxInst = 1000;
+	public static int MaxList = 100;
 	public static int baseSegmento; // base do segmento
 	public static int topoPilhaBaseDados; // topo da pilha da base de dados
 	public static int apontarInstrucoes; // apontador de instruções
@@ -24,7 +25,7 @@ public class Hipotetica {
 	public static int numeroParametros; // número de parâmetros;
 	public static int codigoOperadorInstrucao; // codigo da instrução
 	public static int num_impr;
-	public static int[] S = new int[100000];
+	public static int[] S = new int[1000];
 
 	/**
 	 * Construtor sem parâmetros. Os atributos "nv", "np" e "num_impr" são
@@ -32,7 +33,7 @@ public class Hipotetica {
 	 */
 	public Hipotetica() {
 		baseSegmento = numeroVariaveis = numeroParametros = num_impr = topoPilhaBaseDados = apontarInstrucoes = primeiroOperando = segundoOperando = codigoOperadorInstrucao = 0;
-		S = new int[100000];
+		S = new int[1000];
 	}
 
 	/**
@@ -175,14 +176,11 @@ public class Hipotetica {
 				topoPilhaBaseDados = topoPilhaBaseDados - 1;
 				break;
 			case 8: // DIVI
-				if (S[topoPilhaBaseDados] == 0) {
-					try {
-						S[topoPilhaBaseDados - 1] = S[topoPilhaBaseDados - 1] / S[topoPilhaBaseDados];
-						topoPilhaBaseDados = topoPilhaBaseDados - 1;
-					} catch (ArithmeticException airthEx) {
-						throw new Exception("Impossivel dividir por zero.");
-					}
-				}
+                if (S[topoPilhaBaseDados] == 0) {
+                	throw new Exception("Impossivel dividir por zero.");
+                }
+                S[topoPilhaBaseDados - 1] = S[topoPilhaBaseDados - 1] / S[topoPilhaBaseDados];
+                --topoPilhaBaseDados;
 				break;
 			case 9:// INVR
 				S[topoPilhaBaseDados] = -S[topoPilhaBaseDados];

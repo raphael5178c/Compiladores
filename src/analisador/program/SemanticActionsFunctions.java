@@ -251,7 +251,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterDominionThenBeforeElse() throws Exception {
-        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop(), 0, Semantico.areaInstrucoes.LC + 1);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop()+1, 0, Semantico.areaInstrucoes.LC + 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
 		Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
 	}
@@ -372,6 +372,7 @@ public class SemanticActionsFunctions {
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 28, 0 ,0);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0 ,0);
+        Semantico.fors.push(Semantico.areaInstrucoes.LC);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0 ,0);
 	}
 

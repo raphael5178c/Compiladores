@@ -223,6 +223,7 @@ public class Main extends JFrame{
 	protected void choseFileCode() {
 		JFileChooser chooser = new JFileChooser("resource\\arquivo");
 		chooser.showOpenDialog(null);
+		if(chooser.getSelectedFile() == null) return;
 		fileSelected = new File(chooser.getSelectedFile().getPath());
 		try {
 			txtFonte.setText(new String(Files.readAllBytes(fileToPath(fileSelected))));
