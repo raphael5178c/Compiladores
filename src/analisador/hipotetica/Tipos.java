@@ -22,4 +22,9 @@ public class Tipos {
 	     this.op2 = 0;
    	 }
 
+	@Override
+	public String toString() {
+		return "código: " + codigo + " - op1: " + op1 + " - op2: " + op2;
+	}
+	
 }

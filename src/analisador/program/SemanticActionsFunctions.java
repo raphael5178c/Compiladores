@@ -207,7 +207,7 @@ public class SemanticActionsFunctions {
             throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Erro na atribuição da variavel %s na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
         int d_nivel = Semantico.nivel_atual - Semantico.atribuicaoTemp.getNivelDeclaracao();
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, d_nivel, Semantico.atribuicaoTemp.getGeralA());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.atribuicaoTemp.getGeralA(), d_nivel);
         Semantico.atribuicaoTemp = null;
 	}
 
@@ -295,7 +295,7 @@ public class SemanticActionsFunctions {
             int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
             if (simboloSearched.getCategoria().equals(TipoIdentificador.VARIAVEL)) {
                 Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 21, 0, 0);
-                Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, d_nivel, simboloSearched.getGeralA());
+                Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, simboloSearched.getGeralA(), d_nivel);
             } else {
                 throw new Exception(ExceptionUtil.getSemanticGeneralError("Identificador não é uma variável"));
             }
@@ -364,28 +364,29 @@ public class SemanticActionsFunctions {
 	}
 	
 	public static void afterExpressaoValorInicial() {
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.forEnd.getGeralB(), Semantico.forEnd.getGeralA());
 	}
 
 	public static void afterExpressaoValorFinal(Token token) throws Exception {
         Semantico.fors.push(Semantico.areaInstrucoes.LC);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 28, 0 ,0);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralA(), Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralB(), Semantico.forEnd.getGeralA());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0 ,0);
         Semantico.fors.push(Semantico.areaInstrucoes.LC);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0 ,0);
 	}
 
 	public static void afterComandoEmFor() throws Exception {
-		int difNivel = Semantico.nivel_atual - Semantico.forEnd.getGeralA();
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, difNivel, Semantico.forEnd.getGeralB());
+		int difNivel = Semantico.nivel_atual - Semantico.forEnd.getNivelDeclaracao();
+		int desNivel = Semantico.forEnd.getGeralA();
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, difNivel, Semantico.forEnd.getGeralA());
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, 1);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 5, 0, 0);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, difNivel, Semantico.forEnd.getGeralB());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, difNivel, desNivel);
         int forPos = Semantico.fors.pop();
-        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, forPos, 0, Semantico.areaInstrucoes.LC + 1);
         int forAfterPos = Semantico.fors.pop();
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, forAfterPos);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, forPos, -1, Semantico.areaInstrucoes.LC);
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 24, 0, -1);
 	}
 

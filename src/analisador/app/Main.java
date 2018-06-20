@@ -251,6 +251,10 @@ public class Main extends JFrame{
 						dados[i][1] = String.valueOf(InstrucoesHipotetica.instrucaoHipotetica[tipo.codigo]);
 						dados[i][2] = String.valueOf(tipo.op1);
 						dados[i][3] = String.valueOf(tipo.op2);
+						if (tipo.op1 == 0 && tipo.op2 == 0) {
+							dados[i][2] = "-";
+							dados[i][3] = "-";
+						}
 					}
 					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 					centerRenderer.setHorizontalAlignment(JLabel.CENTER);
