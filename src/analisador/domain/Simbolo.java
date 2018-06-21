@@ -140,7 +140,11 @@ public class Simbolo {
 	public boolean isUseNivelSymbolCompare() {
 		return this.usaNivelCompare;
 	}
-	
+
+	@Override
+	public String toString() {
+		return new StringBuilder().append(nomeSimbolo).append("|").append(categoria).append("|").append(nivelDeclaracao).append("|").append(geralA).append("|").append(geralB).toString();
+	}
 	
 	
 }

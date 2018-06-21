@@ -5,6 +5,8 @@ import java.util.Stack;
 
 import analisador.constants.LMSConstantTokens;
 import analisador.domain.Token;
+import analisador.hipotetica.InstrucoesHipotetica;
+import analisador.hipotetica.Tipos;
 import analisador.parsers.LMSParserTable;
 import analisador.util.ConsoleUtil;
 import analisador.util.ExceptionUtil;
@@ -35,6 +37,10 @@ public class Sintatico {
 		while (pilha.size() > 0) {
 			tokenAtual = (tokenAtual == null) ? listToken.get(currentIndex++) : tokenAtual;
 			int pilhaCodigo = pilha.pop();
+			if (currentIndex == 118) {
+				Semantico.tabelaSimbolos.print();
+				System.out.println();
+			}
 			if(isValorPilhaInicioOuFimArquivo(pilhaCodigo)) {
 				continue;
 			}
@@ -49,6 +55,17 @@ public class Sintatico {
 		if(goSemantica) {
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise semantica do código de fonte...");
 			if(Semantico.hipotetica != null) {
+				Tipos[] t = Semantico.areaInstrucoes.AI;
+				int c = 1;
+				StringBuilder s = new StringBuilder();
+				s.append("código|Instrução|Op1|Op2").append("\n");
+				for (Tipos tipos : t) {
+					if (tipos.codigo == -1 && tipos.op1 == -1 && tipos.op2 == -1)
+						break;
+					s.append(c).append("|").append(InstrucoesHipotetica.instrucaoHipotetica[tipos.codigo]).append("|").append(tipos.op1).append("|").append(tipos.op2).append("\n");
+					c++;
+				}
+				System.out.println(s.toString());
 				Semantico.hipotetica.Interpreta(Semantico.areaInstrucoes, Semantico.areaLiterais);
 			}
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise semantica do código de fonte...");

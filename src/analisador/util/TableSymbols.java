@@ -149,4 +149,10 @@ public class TableSymbols extends HashEvent {
 		return TableSymbols.hashTable;
 	}
 	
+	public void print() {
+		for (Entry iterable_element : hashTable.entrySet()) {
+			System.out.println(iterable_element.getValue().toString());
+		}
+	}
+	
 }

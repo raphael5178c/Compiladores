@@ -29,9 +29,9 @@ Begin
 	begin
 		cont := cont + 1;
 		call calcula(x);
-		Writeln("Resultado do c√°lculo: ", res);
+		Writeln("Resultado do c·lculo: ", res);
 		soma := soma + res;
 	end
 	Until cont > maxcont;
-	Writeln("Resultado da soma dos c√°lculos: ", soma);
+	Writeln("Resultado da soma dos c·lculos: ", soma);
 End.
