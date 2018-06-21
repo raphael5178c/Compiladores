@@ -163,13 +163,13 @@ public class Semantico {
 				SemanticActionsFunctions.afterComandoCase();
 			break;
 			case SemanticActionsConstant.RAMO_CASE_AFTER_INTEIRO_ULTIMO_LISTA:
-				SemanticActionsFunctions.ramoCaseAfterInteiroUltimoLista();
+				SemanticActionsFunctions.ramoCaseAfterInteiroUltimoLista(token, beforePreviusToken);
 			break;
 			case SemanticActionsConstant.AFTER_COMANDO_EM_CASE:
 				SemanticActionsFunctions.afterComandoEmCase();
 			break;
 			case SemanticActionsConstant.RAMO_CASE_AFTER_INTEIRO:
-				SemanticActionsFunctions.ramoCaseAfterInteiro();
+				SemanticActionsFunctions.ramoCaseAfterInteiro(token, beforePreviusToken);
 			break;
 			case SemanticActionsConstant.AFTER_VARIAVEL_CONTROLE_FOR:
 				SemanticActionsFunctions.afterVariavelControleFor(token);

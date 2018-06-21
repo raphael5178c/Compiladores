@@ -19,7 +19,6 @@ import analisador.util.ValueUtil;
 public class SemanticActionsFunctions {
 
 	public static void reconheceNomePrograma() {
-
 		Semantico.hipotetica = new Hipotetica();
 		Semantico.instrucoesHipotetica = new InstrucoesHipotetica();
 		Semantico.areaInstrucoes = new AreaInstrucoes();
@@ -65,7 +64,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void reconheceFinalPrograma(Token token) throws Exception {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 26, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.PARA, 0, 0);
 		Simbolo simboloRotulo = new Simbolo(token, 0, TipoIdentificador.ROTULO);
 		Simbolo rotuloEncontrado = Semantico.tabelaSimbolos.getValue(simboloRotulo);
 		if(rotuloEncontrado != null) {
@@ -74,7 +73,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterDeclareVariable() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 24, 0, Semantico.acaoAcumulada);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.AMEM, 0, Semantico.acaoAcumulada);
 		Semantico.acaoAcumulada = 3;
 	}
 
@@ -156,12 +155,12 @@ public class SemanticActionsFunctions {
             Semantico.procedureTemp.setGeralB(Semantico.numeroParametros);
             Semantico.tabelaSimbolos.insertValue(Semantico.procedureTemp);
         }
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVS, 0, 0);
         Semantico.procedures.push(Semantico.areaInstrucoes.LC-1);
 	}
 
 	public static void fimProcedure() throws Exception {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 1, 0, Semantico.numeroParametros+1);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.RETU, 0, Semantico.numeroParametros+1);
         int i = 0;
         while (i < Semantico.tabelaSimbolos.size()) {
         	Simbolo simbolLoopSearched = Semantico.tabelaSimbolos.getByQtValueInsertedNumber(i);
@@ -171,8 +170,7 @@ public class SemanticActionsFunctions {
             }
             ++i;
         }
-        int valueProcedure = Semantico.procedures.pop();
-        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, valueProcedure, 0, Semantico.areaInstrucoes.LC);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.procedures.pop(), 0, Semantico.areaInstrucoes.LC);
         --Semantico.nivel_atual;
 	}
 
@@ -207,7 +205,7 @@ public class SemanticActionsFunctions {
             throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Erro na atribuição da variavel %s na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
         int d_nivel = Semantico.nivel_atual - Semantico.atribuicaoTemp.getNivelDeclaracao();
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.atribuicaoTemp.getGeralA(), d_nivel);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.ARMZ, d_nivel, Semantico.atribuicaoTemp.getGeralA());
         Semantico.atribuicaoTemp = null;
 	}
 
@@ -230,7 +228,7 @@ public class SemanticActionsFunctions {
 		} else if(procedure.getGeralB() != Semantico.numeroParametros) {
 			throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Número de parametros da procedure %s não conferem com o número de parâmetros recebidos", Semantico.nomeProcedure)));
 		}
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 25, 0, procedure.getGeralA());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CALL, 0, procedure.getGeralA());
 	}
 
 	public static void afterExpressaoComandoCall() {
@@ -242,8 +240,8 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterExpressaoNoIf() throws Exception {
-		Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, 0);
+		Semantico.ifs.push(Semantico.areaInstrucoes.LC);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVF, 0, 0);
 	}
 
 	public static void afterInstrucaoIf() throws Exception {
@@ -251,8 +249,8 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterDominionThenBeforeElse() throws Exception {
-        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop()+1, 0, Semantico.areaInstrucoes.LC + 1);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVS, 0, 0);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop(), 0, Semantico.areaInstrucoes.LC + 1);
 		Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
@@ -261,14 +259,14 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void comandoWhileAfterExpressao() throws Exception {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVF, 0, 0);
 		Semantico.whiles.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
 	public static void afterWhile() throws Exception {
 		int posWhileInst = Semantico.whiles.pop();
         Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, posWhileInst, 0, Semantico.areaInstrucoes.LC + 1);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, posWhileInst);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVS, 0, posWhileInst);
 	}
 
 	public static void repeatInicio() {
@@ -276,7 +274,7 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void repeatFim() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0, Semantico.repeats.pop());
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVF, 0, Semantico.repeats.pop());
 	}
 
 	public static void readlnInicio() {
@@ -294,8 +292,8 @@ public class SemanticActionsFunctions {
             }
             int d_nivel = Semantico.nivel_atual - simboloSearched.getNivelDeclaracao();
             if (simboloSearched.getCategoria().equals(TipoIdentificador.VARIAVEL)) {
-                Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 21, 0, 0);
-                Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, simboloSearched.getGeralA(), d_nivel);
+                Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.LEIT, 0, 0);
+                Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.ARMZ, d_nivel, simboloSearched.getGeralA());
             } else {
                 throw new Exception(ExceptionUtil.getSemanticGeneralError("Identificador não é uma variável"));
             }
@@ -313,21 +311,21 @@ public class SemanticActionsFunctions {
         	throw new Exception(ExceptionUtil.getSemanticGeneralError(String.format("Identificador %s não é uma constante na linha %s", token.getNome(), token.getCurrentlineNumber())));
         }
         if (simboloSearched.getCategoria().equals(TipoIdentificador.CONSTANTE)) {
-            Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, simboloSearched.getGeralA());
+            Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRCT, 0, simboloSearched.getGeralA());
             return;
         }
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, d_nivel, simboloSearched.getGeralA());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRVL, d_nivel, simboloSearched.getGeralA());
 	}
 
 	public static void afterLiteralNaInstrucaoWriteln(Token tokenLiteral) {
 		Semantico.hipotetica.IncluirAL(Semantico.areaLiterais, tokenLiteral.getNome());
 		Semantico.ponteiro_area_literais++;
 		Semantico.instrucoesHipotetica.insertLiteral(tokenLiteral.getNome(), Semantico.areaLiterais.LIT - 1);
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 23, 0, Semantico.areaLiterais.LIT - 1);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.IMPRL, 0, Semantico.areaLiterais.LIT - 1);
 	}
 
 	public static void writelnAfterExpressao() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 22, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.IMPR, 0, 0);
 	}
 
 	public static void afterReservadaCase() {
@@ -335,23 +333,38 @@ public class SemanticActionsFunctions {
 	}
 
 	public static void afterComandoCase() {
-//        this.instrucoes.alteraInstrucao(this.cases.veTopo(), 0, this.AI.LC + 1);
-//        Semantico.hipotetica.AlterarAI(this.AI, this.cases.veTopo(), 0, this.AI.LC);
-//        this.cases.tiraElemento();
-//        this.instrucoes.insereInstrucao(24, 0, -1);
-//        this.maquinaHipotetica.IncluirAI(this.AI, 24, 0, -1);
+		Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.cases.pop(), 0, Semantico.areaInstrucoes.LC);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.AMEM, 0, -1);
 	}
 
-	public static void ramoCaseAfterInteiroUltimoLista() {
-		// TODO Falta Implementar essa ação Semântica
+	public static void ramoCaseAfterInteiroUltimoLista(Token token, Token penultimoToken) {
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.COPI, 0, 0);
+        int ant = Integer.parseInt(penultimoToken.getNome().toLowerCase());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRCT, 0, ant);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMIG, 0, 0);
+        if (!Semantico.cases.isEmpty()) {
+        	Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.cases.pop(), 0, Semantico.areaInstrucoes.LC + 1);
+        }
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVF, 0, 0);
+        Semantico.cases.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
 	public static void afterComandoEmCase() {
-		// TODO Falta Implementar essa ação Semântica
+		Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.cases.pop(), 0, Semantico.areaInstrucoes.LC + 1);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVS, 0, 0);
+        Semantico.cases.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
-	public static void ramoCaseAfterInteiro() {
-		// TODO Falta Implementar essa ação Semântica
+	public static void ramoCaseAfterInteiro(Token token, Token penultimoToken) {
+        if (!Semantico.cases.isEmpty()) {
+            Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.cases.pop(), 0, Semantico.areaInstrucoes.LC + 1);
+        }
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.COPI, 0, 0);
+        int ant = Integer.parseInt(penultimoToken.getNome().toLowerCase());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRCT, 0, ant);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMIG, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVT, 0, 0);
+        Semantico.cases.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
 	public static void afterVariavelControleFor(Token token) throws Exception {
@@ -364,91 +377,94 @@ public class SemanticActionsFunctions {
 	}
 	
 	public static void afterExpressaoValorInicial() {
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, Semantico.forEnd.getGeralB(), Semantico.forEnd.getGeralA());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.ARMZ, Semantico.forEnd.getGeralB(), Semantico.forEnd.getGeralA());
 	}
 
 	public static void afterExpressaoValorFinal(Token token) throws Exception {
         Semantico.fors.push(Semantico.areaInstrucoes.LC);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 28, 0 ,0);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, Semantico.forEnd.getGeralB(), Semantico.forEnd.getGeralA());
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0 ,0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.COPI, 0 ,0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRVL, Semantico.forEnd.getGeralB(), Semantico.forEnd.getGeralA());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMAI, 0 ,0);
         Semantico.fors.push(Semantico.areaInstrucoes.LC);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 20, 0 ,0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVF, 0 ,0);
 	}
 
 	public static void afterComandoEmFor() throws Exception {
 		int difNivel = Semantico.nivel_atual - Semantico.forEnd.getNivelDeclaracao();
 		int desNivel = Semantico.forEnd.getGeralA();
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 2, difNivel, Semantico.forEnd.getGeralA());
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, 1);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 5, 0, 0);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 4, difNivel, desNivel);
+		
+		//Incremento do FOR
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRVL, difNivel, Semantico.forEnd.getGeralA());
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRCT, 0, 1);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.SOMA, 0, 0);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.ARMZ, difNivel, desNivel);
+        
         int forPos = Semantico.fors.pop();
         int forAfterPos = Semantico.fors.pop();
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 19, 0, forAfterPos);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVS, 0, forAfterPos);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.AMEM, 0, -1);
         Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, forPos, -1, Semantico.areaInstrucoes.LC);
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 24, 0, -1);
 	}
 
 	public static void comparacao01() { // =
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 15, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMIG, 0, 0);
 	}
 
 	public static void comparacao02() { // <
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 13, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMMW, 0, 0);
 	}
 
 	public static void comparacao03() { // >
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 14, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMMA, 0, 0);
 	}
 
 	public static void comparacao04() { // >=
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 18, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMAI, 0, 0);
 	}
 
 	public static void comparacao05() { // <=
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 17, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMEI, 0, 0);
 	}
 
 	public static void comparacao06() { // <>
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 16, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CMDF, 0, 0);
 	}
 
 	public static void expressaoOperandoSinalUnario() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 9, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.INVR, 0, 0);
 	}
 
 	public static void expressaoSoma() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 5, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.SOMA, 0, 0);
 	}
 
 	public static void expressaoSubtracao() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 6, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.SUBT, 0, 0);
 	}
 
 	public static void expressaoOr() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 12, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DISJ, 0, 0);
 	}
 
 	public static void expressaoMultiplica() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 7, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.MULT, 0, 0);
 	}
 
 	public static void expressaoDivisao() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 8, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DIVI, 0, 0);
 	}
 
 	public static void expressaoAnd() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 11, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CONJ, 0, 0);
 	}
 
 	public static void expressaoInt(Token token) {
         int pen = Integer.parseInt(token.getNome());
-        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 3, 0, pen);
+        Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.CRCT, 0, pen);
 	}
 
 	public static void expressaoNot() {
-		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, 10, 0, 0);
+		Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.NEGA, 0, 0);
 	}
 
 	public static void expressaoVariavel() {

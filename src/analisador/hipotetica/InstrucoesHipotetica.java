@@ -9,41 +9,75 @@ import analisador.program.Semantico;
 
 public class InstrucoesHipotetica {
 	
-	public static String[] instrucaoHipotetica = new String[100];
+	public static final int RETU = 1;
+	public static final int CRVL = 2;
+	public static final int CRCT = 3;
+	public static final int ARMZ = 4;
+	public static final int SOMA = 5;
+	public static final int SUBT = 6;
+	public static final int MULT = 7;
+	public static final int DIVI = 8;
+	public static final int INVR = 9;
+	public static final int NEGA = 10;
+	public static final int CONJ = 11;
+	public static final int DISJ = 12;
+	public static final int CMMW = 13;
+	public static final int CMMA = 14;
+	public static final int CMIG = 15;
+	public static final int CMDF = 16;
+	public static final int CMEI = 17;
+	public static final int CMAI = 18;
+	public static final int DSVS = 19;
+	public static final int DSVF = 20;
+	public static final int LEIT = 21;
+	public static final int IMPR = 22;
+	public static final int IMPRL = 23;
+	public static final int AMEM = 24;
+	public static final int CALL = 25;
+	public static final int PARA = 26;
+	public static final int NADA = 27;
+	public static final int COPI = 28;
+	public static final int DSVT= 29;
+	
+	public static String[] instrucaoHipotetica = new String[30];
 	public List<Instrucao> listIntrucao;
 	public List<Literal> listLiteral;
 	
 	public InstrucoesHipotetica() {
-        InstrucoesHipotetica.instrucaoHipotetica[1] = "RETU";
-        InstrucoesHipotetica.instrucaoHipotetica[2] = "CRVL";
-        InstrucoesHipotetica.instrucaoHipotetica[3] = "CRCT";
-        InstrucoesHipotetica.instrucaoHipotetica[4] = "ARMZ";
-        InstrucoesHipotetica.instrucaoHipotetica[5] = "SOMA";
-        InstrucoesHipotetica.instrucaoHipotetica[6] = "SUBT";
-        InstrucoesHipotetica.instrucaoHipotetica[7] = "MULT";
-        InstrucoesHipotetica.instrucaoHipotetica[8] = "DIVI";
-        InstrucoesHipotetica.instrucaoHipotetica[9] = "INVR";
-        InstrucoesHipotetica.instrucaoHipotetica[10] = "NEGA";
-        InstrucoesHipotetica.instrucaoHipotetica[11] = "CONJ";
-        InstrucoesHipotetica.instrucaoHipotetica[12] = "DISJ";
-        InstrucoesHipotetica.instrucaoHipotetica[13] = "CMME";
-        InstrucoesHipotetica.instrucaoHipotetica[14] = "CMMA";
-        InstrucoesHipotetica.instrucaoHipotetica[15] = "CMIG";
-        InstrucoesHipotetica.instrucaoHipotetica[16] = "CMDF";
-        InstrucoesHipotetica.instrucaoHipotetica[17] = "CMEI";
-        InstrucoesHipotetica.instrucaoHipotetica[18] = "CMAI";
-        InstrucoesHipotetica.instrucaoHipotetica[19] = "DSVS";
-        InstrucoesHipotetica.instrucaoHipotetica[20] = "DSVF";
-        InstrucoesHipotetica.instrucaoHipotetica[21] = "LEIT";
-        InstrucoesHipotetica.instrucaoHipotetica[22] = "IMPR";
-        InstrucoesHipotetica.instrucaoHipotetica[23] = "IMPRL";
-        InstrucoesHipotetica.instrucaoHipotetica[24] = "AMEM";
-        InstrucoesHipotetica.instrucaoHipotetica[25] = "CALL";
-        InstrucoesHipotetica.instrucaoHipotetica[26] = "PARA";
-        InstrucoesHipotetica.instrucaoHipotetica[27] = "NADA";
-        InstrucoesHipotetica.instrucaoHipotetica[28] = "COPI";
-        InstrucoesHipotetica.instrucaoHipotetica[29] = "DSVT";
-        InstrucoesHipotetica.instrucaoHipotetica[99] = "##DEBUG##";
+        InstrucoesHipotetica.instrucaoHipotetica[RETU] = "RETU";
+        InstrucoesHipotetica.instrucaoHipotetica[CRVL] = "CRVL";
+        InstrucoesHipotetica.instrucaoHipotetica[CRCT] = "CRCT";
+        InstrucoesHipotetica.instrucaoHipotetica[ARMZ] = "ARMZ";
+        InstrucoesHipotetica.instrucaoHipotetica[SOMA] = "SOMA";
+        InstrucoesHipotetica.instrucaoHipotetica[SUBT] = "SUBT";
+        InstrucoesHipotetica.instrucaoHipotetica[MULT] = "MULT";
+        InstrucoesHipotetica.instrucaoHipotetica[DIVI] = "DIVI";
+        InstrucoesHipotetica.instrucaoHipotetica[INVR] = "INVR";
+        InstrucoesHipotetica.instrucaoHipotetica[NEGA] = "NEGA";
+        InstrucoesHipotetica.instrucaoHipotetica[CONJ] = "CONJ";
+        InstrucoesHipotetica.instrucaoHipotetica[DISJ] = "DISJ";
+        InstrucoesHipotetica.instrucaoHipotetica[CMMW] = "CMME";
+        InstrucoesHipotetica.instrucaoHipotetica[CMMA] = "CMMA";
+        InstrucoesHipotetica.instrucaoHipotetica[CMIG] = "CMIG";
+        InstrucoesHipotetica.instrucaoHipotetica[CMDF] = "CMDF";
+        InstrucoesHipotetica.instrucaoHipotetica[CMEI] = "CMEI";
+        InstrucoesHipotetica.instrucaoHipotetica[CMAI] = "CMAI";
+        InstrucoesHipotetica.instrucaoHipotetica[DSVS] = "DSVS";
+        InstrucoesHipotetica.instrucaoHipotetica[DSVF] = "DSVF";
+        InstrucoesHipotetica.instrucaoHipotetica[LEIT] = "LEIT";
+        InstrucoesHipotetica.instrucaoHipotetica[IMPR] = "IMPR";
+        InstrucoesHipotetica.instrucaoHipotetica[IMPRL] = "IMPRL";
+        InstrucoesHipotetica.instrucaoHipotetica[AMEM] = "AMEM";
+        InstrucoesHipotetica.instrucaoHipotetica[CALL] = "CALL";
+        InstrucoesHipotetica.instrucaoHipotetica[PARA] = "PARA";
+        InstrucoesHipotetica.instrucaoHipotetica[NADA] = "NADA";
+        InstrucoesHipotetica.instrucaoHipotetica[COPI] = "COPI";
+        InstrucoesHipotetica.instrucaoHipotetica[DSVT] = "DSVT";
+	}
+	
+	public static String getNameInstrucao(int idInstrucao) throws Exception {
+		if(idInstrucao < 1 || idInstrucao > 29) throw new Exception("Instrução não cadastrada na lista de instruções");
+		return instrucaoHipotetica[idInstrucao];
 	}
 	
 	public void insertLiteral(String nmLiteral, int endMemoria) {

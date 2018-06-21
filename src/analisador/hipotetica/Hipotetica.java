@@ -266,7 +266,7 @@ public class Hipotetica {
 				topoPilhaBaseDados = topoPilhaBaseDados + 1;
 				leitura = JOptionPane.showInputDialog(null, "Informe o valor:", "Leitura", JOptionPane.QUESTION_MESSAGE);
 				// System.out.print("Leia: "); A
-				if(leitura.isEmpty()) {
+				if(leitura == null || leitura.isEmpty()) {
 					throw new Exception("Leitura de variável vazia");
 				}
 				(S[topoPilhaBaseDados]) = Integer.parseInt(leitura); // problema aqui A

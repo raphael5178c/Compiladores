@@ -248,7 +248,7 @@ public class Main extends JFrame{
 					for (int i = 0 ; i < qtValid; i++) {
 						Tipos tipo = Semantico.areaInstrucoes.AI[i];
 						dados[i][0] = String.valueOf(i+1);
-						dados[i][1] = String.valueOf(InstrucoesHipotetica.instrucaoHipotetica[tipo.codigo]);
+						dados[i][1] = String.valueOf(InstrucoesHipotetica.getNameInstrucao(tipo.codigo));
 						dados[i][2] = String.valueOf(tipo.op1);
 						dados[i][3] = String.valueOf(tipo.op2);
 						if (tipo.op1 == 0 && tipo.op2 == 0) {
