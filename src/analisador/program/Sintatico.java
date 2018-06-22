@@ -48,7 +48,7 @@ public class Sintatico {
 				currentIndex = verificaTokenTerminal(listToken, currentIndex, pilhaCodigo);
 			} else if (isNotTerminalState(pilhaCodigo)) {
 				verificaTokenNaoTerminal(pilhaCodigo);
-			} else if (isSemanticState(pilhaCodigo) && goSemantica) {
+			} else if (isSemanticState(pilhaCodigo)) {
 				Semantico.gerenciaAcoesSemanticas(pilhaCodigo, previousToken, twoTokenBeforeAtual);
 			}
 		}

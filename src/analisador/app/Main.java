@@ -241,7 +241,7 @@ public class Main extends JFrame{
 			ConsoleUtil.getInstance().setTxtInfoConsole("Iniciando a analise sintatica do código de fonte...");
 			Sintatico.getInstance().analiseSintatica(tokenList, goSemantica);
 			ConsoleUtil.getInstance().setTxtInfoConsole("Finalizada a analise Sintática do código de fonte...");
-			if(goSemantica && Semantico.instrucoesHipotetica != null) {
+			if(Semantico.instrucoesHipotetica != null) {
 				if(Semantico.instrucoesHipotetica.isValidInstrucoes()) {
 					int qtValid = Semantico.instrucoesHipotetica.qtValidInstrucoes();
 					String[][] dados = new String[qtValid][4];
