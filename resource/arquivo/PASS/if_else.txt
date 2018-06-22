@@ -1,0 +1,14 @@
+Program ifelse;
+	Var x: Integer;
+Begin
+	writeln("Informe um valor para somar com 8 * 9");
+	Readln(x);
+	if (x > 0 ) then
+	begin
+		writeln("Somando...");
+		x := 8 * 9 + x;
+	end;
+	else
+		Writeln("Número negativo não é permitido!", x);
+	Writeln("Resultado", x);
+End.

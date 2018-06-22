@@ -1,0 +1,8 @@
+program test2;
+var x, i:integer;
+begin
+	readln("Informe um valor para contar:");
+	readln(x);
+	for i:=1 to x do
+		writeln(i);
+end.

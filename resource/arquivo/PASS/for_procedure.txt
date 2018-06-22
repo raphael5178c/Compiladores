@@ -1,0 +1,13 @@
+program test3;
+var x, i:integer;
+procedure print(h: integer);
+begin
+	writeln(h);
+end;
+begin
+   for i:=1 to 10 do
+begin
+	call print(i);
+end;
+	call print(i);
+end.
