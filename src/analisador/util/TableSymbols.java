@@ -51,11 +51,22 @@ public class TableSymbols extends HashEvent {
 	}
 	
 	public static <T, E> Entry<T, E> getValue(HashMap<T, E> map, E value) {
+		Entry<T, E> temp1 = null;
+		Entry<T, E> temp2 = null;
 		for (Entry<T, E> entry : map.entrySet()) {
-			if (!value.equals(entry.getValue())) continue;
-			return entry;
+			if (!value.equals(entry.getValue())) {
+				continue;
+			}
+			if (temp1 != null) {
+				temp2 = entry;
+			} else {
+				temp1 = entry;
+			}
 		}
-		return null;
+		if (temp2 == null) {
+			return temp1;
+		}
+		return ((Simbolo) temp1.getValue()).getNivelDeclaracao() == ((Simbolo)value).getNivelDeclaracao() ? temp1 : temp2;
 	}
 	
 	public Simbolo getByQtValueInsertedNumber(int number) {
