@@ -245,7 +245,7 @@ public class SemanticActionsFunctions {
 
 	public static void afterDominionThenBeforeElse() throws Exception {
         Semantico.hipotetica.IncluirAI(Semantico.areaInstrucoes, InstrucoesHipotetica.DSVS, 0, 0);
-        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop(), 0, Semantico.areaInstrucoes.LC + 1);
+        Semantico.hipotetica.AlterarAI(Semantico.areaInstrucoes, Semantico.ifs.pop(), 0, Semantico.areaInstrucoes.LC);
 		Semantico.ifs.push(Semantico.areaInstrucoes.LC - 1);
 	}
 
