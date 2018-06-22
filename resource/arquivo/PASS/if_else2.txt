@@ -9,10 +9,10 @@ Begin
 	if media > 7 then
 		begin
 			writeln("Aprovado!");
-		end
+		end;
 	else
 	begin
-		media := media * -1;
+		media := media - media;
 		writeln("Reprovado!");
 	end;
 	writeln("Média: ", media);
