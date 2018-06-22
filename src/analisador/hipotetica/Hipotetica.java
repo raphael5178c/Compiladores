@@ -14,25 +14,35 @@ import javax.swing.JOptionPane;
  * Fabio e adaptada para este aplicativo.
  */
 public class Hipotetica {
-	public static int MaxInst = 1000;
-	public static int MaxList = 100;
-	public static int baseSegmento; // base do segmento
-	public static int topoPilhaBaseDados; // topo da pilha da base de dados
-	public static int apontarInstrucoes; // apontador de instruções
-	public static int primeiroOperando; // primeiro operando
-	public static int segundoOperando; // segundo operando
-	public static int numeroVariaveis; // número de variáveis;
-	public static int numeroParametros; // número de parâmetros;
-	public static int codigoOperadorInstrucao; // codigo da instrução
-	public static int num_impr;
-	public static int[] S = new int[1000];
+	public int MaxInst = 1000;
+	public int MaxList = 100;
+	public int baseSegmento; // base do segmento
+	public int topoPilhaBaseDados; // topo da pilha da base de dados
+	public int apontarInstrucoes; // apontador de instruções
+	public int primeiroOperando; // primeiro operando
+	public int segundoOperando; // segundo operando
+	public int numeroVariaveis; // número de variáveis;
+	public int numeroParametros; // número de parâmetros;
+	public int codigoOperadorInstrucao; // codigo da instrução
+	public int num_impr;
+	public int[] S = new int[1000];
 
 	/**
 	 * Construtor sem parâmetros. Os atributos "nv", "np" e "num_impr" são
 	 * inicializados com valores padrões.
 	 */
 	public Hipotetica() {
-		baseSegmento = numeroVariaveis = numeroParametros = num_impr = topoPilhaBaseDados = apontarInstrucoes = primeiroOperando = segundoOperando = codigoOperadorInstrucao = 0;
+		MaxInst = 1000;
+		MaxList = 100;
+		baseSegmento = 0; // base do segmento
+		topoPilhaBaseDados = 0; // topo da pilha da base de dados
+		apontarInstrucoes = 0; // apontador de instruções
+		primeiroOperando = 0; // primeiro operando
+		segundoOperando = 0; // segundo operando
+		numeroVariaveis = 0; // número de variáveis;
+		numeroParametros = 0; // número de parâmetros;
+		codigoOperadorInstrucao = 0; // codigo da instrução
+		num_impr = 0;
 		S = new int[1000];
 	}
 

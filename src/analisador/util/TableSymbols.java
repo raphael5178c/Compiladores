@@ -81,7 +81,7 @@ public class TableSymbols extends HashEvent {
 		}
 		beforeInsert(hashTableToInsert, value, indexOfHashValue);
 		value.setQtValuesPilha(qtValuesInserted);
-		Simbolo inserted = hashTableToInsert.put(indexOfHashValue, value);
+		hashTableToInsert.put(indexOfHashValue, value);
 		qtValuesInserted++;
 		afterInsert(hashTableToInsert, value, indexOfHashValue);
 		return true;
@@ -150,7 +150,7 @@ public class TableSymbols extends HashEvent {
 	}
 	
 	public void print() {
-		for (Entry iterable_element : hashTable.entrySet()) {
+		for (Entry<Integer, Simbolo> iterable_element : hashTable.entrySet()) {
 			System.out.println(iterable_element.getValue().toString());
 		}
 	}

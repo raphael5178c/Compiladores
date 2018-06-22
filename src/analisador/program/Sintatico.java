@@ -13,7 +13,6 @@ import analisador.util.ExceptionUtil;
 
 public class Sintatico {
 	
-
 	public static Sintatico instance;
 	private Stack<Integer> pilha;
 	private static Token twoTokenBeforeAtual; 
@@ -75,6 +74,8 @@ public class Sintatico {
 
 	private void beginVariables() {
 		tokenAtual = null;
+		previousToken = null;
+		twoTokenBeforeAtual = null;
 		pilha.clear();
 		pilha.push(LMSConstantTokens.TOKEN_DOLLAR);
 		pilha.push(LMSParserTable.getInstance().START_SYMBOL);

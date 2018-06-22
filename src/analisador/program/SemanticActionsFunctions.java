@@ -25,12 +25,9 @@ public class SemanticActionsFunctions {
 		Semantico.areaLiterais = new AreaLiterais();
 		Semantico.nivel_atual = 0;
 		Semantico.deslocamento_conforme_base = 3;
-		Semantico.proxima_Instrucao = 1;
 		Semantico.ponteiro_area_literais = 1;
 		Semantico.acaoAcumulada = 3;
 		Semantico.temParametro = false;
-		Semantico.numeroParametros = 0;
-		Semantico.numeroParametrosEfetivos = 0;
 		Semantico.parametros = new ArrayList<Simbolo>();
 		
 		Semantico.ifs = new Stack<Integer>();
@@ -43,7 +40,6 @@ public class SemanticActionsFunctions {
 		Semantico.tabelaSimbolos = new TableSymbols();
 		Semantico.nomeProcedure = null;
 		Semantico.tipo_identificador = null;
-		Semantico.temParametro = false;
 		Semantico.numeroParametros = 0;
 		Semantico.numeroParametrosEfetivos = 0;
 		Semantico.nomeContexto = null;
@@ -52,7 +48,6 @@ public class SemanticActionsFunctions {
 		Semantico.nome_atribuicao_esquerda = null;
 		Semantico.nome_identificador = null;
 		Semantico.numeroVariaveis = 0;
-		Semantico.forEnd = null;
 		
 		Semantico.atribuicaoTemp = null;
 		Semantico.constanteTemp = null;
